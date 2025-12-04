@@ -3,18 +3,33 @@
 import tables
 import raylib as rl
 
-import graphics, inputs, sound
+import graphics, inputs, sound, window
 
-type 
+
+
+
+type
+  WindowSettings* = object
+    width*:int=800
+    height*:int=600
+    borderless*:bool=false
+    resizeable*:bool= false
+    minWidth*:int=1
+    minHeight*:int=1
+    fullscreen*:bool=false
+    alwaysOnTop*:bool=false
+
+
   AppSettings* = object
-    width*:int=640
-    height*:int=480
+    #Window
+    window*:WindowSettings
     fps*:int=60
-    flags*:Flags[ConfigFlags]=flags(Msaa4xHint, WindowHighdpi)
   App* = object
+    settings:AppSettings
     load: proc() 
     draw: proc()  
     update: proc(dt:float) 
+    
   AppWindow* = object #A Wrapper solution for raylib issues about closing window time
   
 
@@ -39,19 +54,43 @@ proc `=wasMoved`(x: var AppWindow) {.error.}
 
 proc initAppWindow(title:string,appSettings:AppSettings) =
   assert not isWindowReady(), "Window is already opened"
-  setConfigFlags(appSettings.flags)
-  initWindow( int32(appSettings.width), int32(appSettings.height), title)
+  
+  var flg:uint32=0
+  if appSettings.window.resizeable :
+    flg=flg or uint32(WindowResizable)
+
+  if appSettings.window.borderless :
+    flg=flg or uint32(BorderlessWindowedMode)
+    
+  if appSettings.window.alwaysOnTop :
+    flg=flg or uint32(WindowTopmost)
+
+
+  var allFlags:Flags[ConfigFlags]=Flags[ConfigFlags]( flg  )
+  setConfigFlags(allFlags)
+
+  window.setMinSize(appSettings.window.minWidth,appSettings.window.minHeight)
+
+  initWindow( int32(appSettings.window.width), int32(appSettings.window.height), title)
+
+  if appSettings.window.fullscreen :
+    window.setFullScreenMode(true)
+
+  
+  
   setTargetFPS(int32(appSettings.fps))
   initAudioDevice()
   kirpiApp.load() # load 
 
 
 var fpsTimer = 0.0
-proc run*(title:string,load: proc(), update: proc(dt:float), draw: proc(), settings:AppSettings=AppSettings()) =
+proc run*(title:string,load: proc(), update: proc(dt:float), draw: proc(), config : proc (settings : var AppSettings)=nil) =
   kirpiApp.load = load
   kirpiApp.update = update
   kirpiApp.draw = draw
-  initAppWindow(title,settings)
+  if config!=nil :
+    config(kirpiApp.settings)
+  initAppWindow(title,kirpiApp.settings)
 
   while not windowShouldClose() :
     #Update Sound Streams
@@ -73,5 +112,5 @@ proc run*(title:string,load: proc(), update: proc(dt:float), draw: proc(), setti
     
 
 
-export graphics, inputs
+export graphics, inputs, window
 export sound 

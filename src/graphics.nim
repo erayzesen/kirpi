@@ -428,7 +428,7 @@ proc draw*( texture:Texture, quad:Quad, x:float=0.0,y:float=0.0) =
   let tcx2:float=tcx1+quad.w/quad.sw
   let tcy2:float=tcy1+quad.h/quad.sh
 
-  echo v1y
+  
 
   
 
@@ -529,5 +529,6 @@ proc draw*( text:Text ,x:float=0.0,y:float=0.0, size:float=16, spacing:float=1.0
   discard
 
 
-  
-export  Black,Magenta,White, rl.Font
+#Export raylib colors
+export  rl.Color,LightGray,Gray,DarkGray,Yellow,Gold,Orange,Pink,Red,Maroon,Green,Lime,DarkGreen,SkyBlue,Blue,DarkBlue,Purple,Violet,DarkPurple,Beige,Brown,DarkBrown,White, Black,Blank,Magenta
+export  rl.Font

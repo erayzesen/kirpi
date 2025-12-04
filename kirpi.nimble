@@ -2,10 +2,10 @@
 
 version       = "0.1.0"
 author        = "Eray Zesen"
-description   = "Kirpi is a basic framework you can use to make 2D games. "
+description   = "A minimal 2D game and ia framework. "
 license       = "MIT"
 srcDir        = "src"
-bin           = @["kirpi"]
+
 
 
 # Dependencies

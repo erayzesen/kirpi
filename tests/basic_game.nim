@@ -13,6 +13,13 @@ var walkAnimCounter=0
 
 var batchCount:int=1
 var frameCount:int=0
+
+proc config(settings:var AppSettings) =
+    settings.window.width=800
+    settings.window.height=600
+    settings.window.resizeable=false
+    settings.window.fullscreen=true
+
 proc load() =
     sampleTexture=newTexture("resources/mario.png")
     atlasTexture=newTexture("resources/sampleAtlas.png")
@@ -53,6 +60,9 @@ proc update(dt:float) =
     if isKeyPressed(KeyboardKey.Up):
         batchCount=batchCount+100
         echo "batchCount: " & $batchCount
+
+    if isKeyPressed(KeyboardKey.Space):
+        window.setFullScreenMode( not window.getFullScreenMode() )
     
     sampleSpriteBatch.clear()
     var quad=newQuad(0,0,64,64,sampleTexture)
@@ -116,4 +126,4 @@ proc draw() =
     draw(sampleSpriteBatch,0,0)
 
 
-run("Sample Game",load,update,draw)
+run("Sample Game",load,update,draw,config)
