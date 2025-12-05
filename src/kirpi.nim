@@ -24,6 +24,7 @@ type
     #Window
     window*:WindowSettings
     fps*:int=60
+    
   App* = object
     settings:AppSettings
     load: proc() 

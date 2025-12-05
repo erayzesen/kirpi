@@ -48,7 +48,7 @@ run( "sample game",load update, draw)
 
 ```
 
-However, for smooth builds across all supported platforms and an ideal folder structure, we recommend using the [kirpi_game_template](#) repository. This repo also includes extensively customized compiler configuration files, thanks in part to the Naylib community, which automate nearly everything for Android builds. Additionally, we provide customized Emscripten configurations for Web builds. In short, you can deploy your project to Android with just a few commands, and to other platforms with a single command. Detailed build instructions are available in our template repository.
+However, for smooth builds across all supported platforms and an ideal folder structure, we recommend using the [kirpi_app_template](https://github.com/erayzesen/kirpi_app_template) repository. This repo also includes extensively customized compiler configuration files, thanks in part to the Naylib community, which automate nearly everything for Android builds. Additionally, we provide customized Emscripten configurations for Web builds. In short, you can deploy your project to Android with just a few commands, and to other platforms with a single command. Detailed build instructions are available in our template repository.
 
 
 
