@@ -146,6 +146,9 @@ var drawerLineWidth:float=1.0f
 var currentFont:rl.Font = getFontDefault()
 
 
+proc setFont*(font:rl.Font) =
+  currentFont=font
+
 proc getFont*():ptr rl.Font =
   result=addr currentFont
 
@@ -222,8 +225,14 @@ proc setColor* (r:uint8, g:uint8,b:uint8, a:uint8) =
 proc setColor* (color:Color) =
     drawerColor=color
 
+proc getColor * () :Color =
+  result=drawerColor
+
 proc setLine*(width:float) =
     drawerLineWidth=width
+
+proc getLine*():float =
+  result=drawerLineWidth
 
 
 proc polygon*(mode:DrawModes,points:varargs[float]) =
