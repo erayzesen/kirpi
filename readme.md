@@ -15,7 +15,7 @@ A lightweight 2D game framework featuring a clean, LÖVE2D-inspired graphics API
 * Very small Web builds. An empty project ships at around 400–500 KB, and 150–200 KB when zipped — almost comparable to JavaScript game frameworks.
 * Easy to learn with a minimal, well-placed abstraction layer. Want to use an ECS library? Bring your own. Need a physics engine or just a simple collider library? Your call.
 * Straightforward multi-platform builds thanks to the configuration in the template project, including Android. Each platform also gets a clean, organized folder structure.
-* You write your game in Nim, a pleasant and elegant language that’s easy to pick up and often delivers near-C performance. Nim avoids a traditional GC and instead uses ARC (Automatic Reference Counting), a deterministic, low-overhead memory model similar to C++’s RAII.
+* You write your game in Nim, a pleasant and elegant language that’s easy to pick up and often delivers near-C performance. Nim uses ARC (Automatic Reference Counting), a deterministic, low-overhead memory model similar to C++’s RAII.
 
 And really, the motivation behind Kirpi explains it best:
 tiny web builds, a fun and elegant language to work in, great performance, a minimal API you can build an ecosystem around, and fully compiled (non-VM) games.
@@ -23,7 +23,7 @@ tiny web builds, a fun and elegant language to work in, great performance, a min
 
 
 ## Getting Started
-Install naylib easily with `nimble install kirpi`.
+Install kirpi easily with `nimble install kirpi`.
 
 To compile a Kirpi project for your desktop platform, the Nim toolchain and compiler are sufficient. The command `nim c -r game.nim` will do the job. 
 
