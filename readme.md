@@ -5,7 +5,7 @@
 
 </div>
 
-A lightweight 2D game framework featuring a clean, LÖVE2D-inspired graphics API (LÖVE2D developers will feel right at home). It uses [Naylib](https://github.com/planetis-m/naylib) (Raylib) as its well-maintained cross-platform backend within the Nim ecosystem.
+A lightweight 2D game framework featuring a clean, [Löve2D](https://love2d.org/)-inspired graphics API (Löve2D developers will feel right at home). It uses [Naylib](https://github.com/planetis-m/naylib) (Raylib) as its well-maintained cross-platform backend within the Nim ecosystem.
 
 **Supported Build Targets:** Web(Wasm),Linux,Windows,Macos,Android 
 
@@ -16,6 +16,7 @@ A lightweight 2D game framework featuring a clean, LÖVE2D-inspired graphics API
 * Easy to learn with a minimal, well-placed abstraction layer. Want to use an ECS library? Bring your own. Need a physics engine or just a simple collider library? Your call.
 * Straightforward multi-platform builds thanks to the configuration in the template project, including Android. Each platform also gets a clean, organized folder structure.
 * You write your game in Nim, a pleasant and elegant language that’s easy to pick up and often delivers near-C performance. Nim uses ARC (Automatic Reference Counting), a deterministic, low-overhead memory model similar to C++’s RAII.
+
 
 And really, the motivation behind Kirpi explains it best:
 tiny web builds, a fun and elegant language to work in, great performance, a minimal API you can build an ecosystem around, and fully compiled (non-VM) games.
@@ -50,7 +51,14 @@ run( "sample game",load update, draw)
 
 ```
 
-However, for smooth builds across all supported platforms and an ideal folder structure, we recommend using the [kirpi_app_template](https://github.com/erayzesen/kirpi_app_template) repository. This repo also includes extensively customized compiler configuration files, thanks in part to the Naylib community, which automate nearly everything for Android builds. Additionally, we provide customized Emscripten configurations for Web builds. In short, you can deploy your project to Android with just a few commands, and to other platforms with a single command. Detailed build instructions are available in our template repository.
+However, for smooth builds across all supported platforms and an ideal folder structure, we recommend using the [kirpi_app_template](https://github.com/erayzesen/kirpi_app_template) repository.
+ 
+
+```shell
+git clone https://github.com/erayzesen/kirpi_app_template.git your_project_name
+```
+
+ This repo also includes extensively customized compiler configuration files, thanks in part to the Naylib community, which automate nearly everything for Android builds. Additionally, we provide customized Emscripten configurations for Web builds. In short, you can deploy your project to Android with just a few commands, and to other platforms with a single command. Detailed build instructions are available in our template repository.
 
 
 
