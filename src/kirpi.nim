@@ -8,6 +8,7 @@ import graphics, inputs, sound, window
 
 
 
+
 type
   WindowSettings* = object
     width*:int=800
@@ -19,11 +20,15 @@ type
     fullscreen*:bool=false
     alwaysOnTop*:bool=false
 
+  TextureFilterSettings = enum 
+    Linear,
+    Nearest
 
   AppSettings* = object
     #Window
     window*:WindowSettings
     fps*:int=60
+    defaultTextureFilter*:TextureFilterSettings=TextureFilterSettings.Linear
     
   App* = object
     settings:AppSettings
@@ -80,6 +85,9 @@ proc initAppWindow(title:string,appSettings:AppSettings) =
   
   
   setTargetFPS(int32(appSettings.fps))
+  if appSettings.defaultTextureFilter==TextureFilterSettings.Nearest :
+    graphics.defaultFilter=TextureFilters.Nearest
+
   initAudioDevice()
   kirpiApp.load() # load 
 
@@ -112,6 +120,6 @@ proc run*(title:string,load: proc(), update: proc(dt:float), draw: proc(), confi
       fpsTimer = 0.0
     
 
-
-export graphics, inputs, window
+export graphics except defaultFilter
+export inputs, window
 export sound 

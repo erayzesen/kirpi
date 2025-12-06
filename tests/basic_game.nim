@@ -18,7 +18,7 @@ proc config(settings:var AppSettings) =
     settings.window.width=800
     settings.window.height=600
     settings.window.resizeable=false
-    settings.window.fullscreen=true
+    settings.window.fullscreen=false
 
 proc load() =
     sampleTexture=newTexture("resources/mario.png")

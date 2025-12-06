@@ -107,6 +107,10 @@ proc applyTransform*(t: Transform) =
 ### End of Fast 2D Transform Logic ###
 
 type 
+  TextureFilters* = enum 
+    Default,
+    Nearest,
+    Linear
   Text* = object 
     str:string=""
     font:ptr rl.Font
@@ -115,9 +119,10 @@ type
     rFont: rl.Font
 
   Texture *  = object
-    rTexture*: rl.Texture2D
+    rTexture: rl.Texture2D
     width*:float=0.0
     height*:float=0.0
+    filter:TextureFilters=TextureFilters.Default
 
   Quad * = object
     x*:int
@@ -141,6 +146,7 @@ type
   ArcType* = enum Pie,Open,Closed
 
 #Properties
+var defaultFilter*:TextureFilters=TextureFilters.Linear
 var drawerColor:Color=Color()
 var drawerLineWidth:float=1.0f
 var currentFont:rl.Font = getFontDefault()
@@ -155,10 +161,11 @@ proc getFont*():ptr rl.Font =
 
 
 #Creators
-proc newTexture*(filename:string):Texture =
+proc newTexture*(filename:string, filter:TextureFilters=Default):Texture =
   result=Texture(rTexture:loadTexture(filename))
   result.width=float(result.rTexture.width)
   result.height=float(result.rTexture.height)
+  result.filter=filter
   
 
 proc newImage*(filename:string):rl.Image =

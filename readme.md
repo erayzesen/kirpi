@@ -47,7 +47,7 @@ proc draw() =
     setColor(White)
     draw(sampleText,100,100)
 
-run( "sample game",load update, draw)
+run( "sample game",load,update,draw)
 
 ```
 
@@ -82,6 +82,7 @@ draw()     #  which is used to render the game state onto the screen
 config(settings:AppSettings) = # which is used to config the game app
     #all properties
     settings.fps=60
+    settings.defaultTextureFilter=TextureFilterSettings.Linear
     
     settings.window.width=800   
     settings.window.height=600  
