@@ -476,12 +476,13 @@ proc line*(points:varargs[float]) =
 
       if drawerLineJoin==JoinTypes.Miter :
         var np3 = p2-(npc-p2)
+        if (np3-p2).lengthSqr>drawerLineWidth*drawerLineWidth:
+          np3=(np1+np2)*0.5
         if normalSide == -1.0 :
           vertex2f(np3.x, np3.y); 
           vertex2f(npc.x, npc.y); 
           vertex2f(np1.x, np1.y); 
           
-
           vertex2f(np3.x, np3.y); 
           vertex2f(np2.x, np2.y); 
           vertex2f(npc.x, npc.y); 

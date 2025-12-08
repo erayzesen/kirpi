@@ -65,7 +65,7 @@ proc draw() =
 
     #Lines
     setColor(250,250,250,128)
-    setLine(15,JoinTypes.Miter)
+    setLine(15,JoinTypes.Round)
     line(
         100.0,500.0,
         200.0,500.0,
