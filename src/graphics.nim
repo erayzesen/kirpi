@@ -2,7 +2,7 @@ import raylib as rl
 import raymath as rm
 import rlgl as rlgl
 
-import tables,os,hashes
+import tables,os,hashes,options
 
 import math
 import triangulator
@@ -109,6 +109,11 @@ proc applyTransform*(t: Transform) =
 ### End of Fast 2D Transform Logic ###
 
 type 
+  JoinTypes* = enum
+    Miter,
+    Round,
+    Bevel
+
   TextureFilters* = enum 
     Default,
     Nearest,
@@ -245,6 +250,7 @@ var defaultFont*:Font
 
 var drawerColor:Color=Color()
 var drawerLineWidth:float=1.0f
+var drawerLineJoin:JoinTypes=JoinTypes.Miter
 var currentFont:Font = defaultFont
 
 
@@ -258,8 +264,8 @@ proc getDefaultFont*():Font =
   result=defaultFont
 
 
-proc setColor* (r:uint8, g:uint8,b:uint8, a:uint8) =
-    drawerColor=Color(r:r,g:g,b:b,a:a)
+proc setColor* (r:int, g:int,b:int, a:int) =
+    drawerColor=Color(r:r.uint8,g:g.uint8,b:b.uint8,a:a.uint8)
 
 proc setColor* (color:Color) =
     drawerColor=color
@@ -267,12 +273,25 @@ proc setColor* (color:Color) =
 proc getColor * () :Color =
   result=drawerColor
 
-proc setLine*(width:float) =
+proc setLine*(width:float,joinType:JoinTypes=JoinTypes.Miter) =
     drawerLineWidth=width
+    drawerLineJoin=joinType
 
-proc getLine*():float =
+proc setLineWidth*(width:float) =
+  drawerLineWidth=width
+
+proc setLineJoin*(joinType:JoinTypes) =
+  drawerLineJoin=joinType
+
+proc getLineWidth*():float =
   result=drawerLineWidth
 
+proc getLineJoin*():JoinTypes =
+  result=drawerLineJoin
+
+proc pixel*(x:float,y:float) =
+  var (tx,ty)=transformPoint(x,y)
+  drawPixel(int32(tx), int32(ty),drawerColor )
 
 proc polygon*(mode:DrawModes,points:varargs[float]) =
     var allPoints:seq[Vec2]
@@ -298,20 +317,6 @@ proc polygon*(mode:DrawModes,points:varargs[float]) =
         
         drawLine(a,b,drawerColor)
 
-proc line*(points:varargs[float]) =
-  if points.len mod 2 != 0:
-    raise newException(ValueError, "Invalid points definition! Must be even number of coordinates.")
-
-  var allPoints: seq[Vector2] = @[]
-  for i in countup(0, points.len - 1, 2):
-    let (px, py) = transformPoint(points[i], points[i+1])
-    allPoints.add(Vector2(x:px, y:py))
-
-  if drawerLineWidth==1.0 :
-    for i in countup(0, allPoints.len - 2, 1):
-      let p1 = allPoints[i]
-      let p2 = allPoints[i+1]
-      drawLine(p1, p2, drawerLineWidth, drawerColor)
 
 proc getArcPoints(x:float,y:float,radiusX:float,radiusY:float,angle1:float,angle2:float,segments:int=16):seq[float] =
   var angleBegin=angle1
@@ -325,6 +330,243 @@ proc getArcPoints(x:float,y:float,radiusX:float,radiusY:float,angle1:float,angle
     allPoints.add(y+sin(ang)*radiusY)
 
   return allPoints
+
+
+proc lineIntersection*(A, B, C, D: Vector2): Option[Vector2] =
+  let
+    s1x = B.x - A.x
+    s1y = B.y - A.y
+    s2x = D.x - C.x
+    s2y = D.y - C.y
+    denom = -s2x * s1y + s1x * s2y
+
+  if abs(denom) < 1e-6:  # paralel
+    return none(Vector2)
+
+  let
+    s = (-s1y * (A.x - C.x) + s1x * (A.y - C.y)) / denom
+    t = ( s2x * (A.y - C.y) - s2y * (A.x - C.x)) / denom
+
+  if t >= 0.0 and t <= 1.0 and s >= 0.0 and s <= 1.0:
+    let ix = A.x + t * s1x
+    let iy = A.y + t * s1y
+    return some(Vector2(x: ix, y: iy))
+  else:
+    return none(Vector2)
+
+proc line*(points:varargs[float]) =
+  if points.len mod 2 != 0:
+    raise newException(ValueError, "Invalid points definition! Must be even number of coordinates.")
+
+  var allPoints: seq[Vector2] = @[]
+  for i in countup(0, points.len - 1, 2):
+    let (px, py) = transformPoint(points[i], points[i+1])
+    allPoints.add(Vector2(x:px, y:py))
+
+  
+  for i in countup(0, allPoints.len - 2, 1):
+    let p1 = allPoints[i]
+    let p2 = allPoints[i+1]
+    #drawLine(p1, p2, drawerLineWidth, drawerColor)
+
+  
+  if drawerLineWidth>1.0 and allPoints.len>2 :
+    rlBegin(Triangles)
+    
+    color4ub(drawerColor.r, drawerColor.g, drawerColor.b, drawerColor.a)
+    #Implementing bevel,miter,round join
+    var prevIntersectionTestTop:Option[Vector2]=none(Vector2)
+    var prevIntersectionTestDown:Option[Vector2]=none(Vector2)
+    for i in 0..<allPoints.len-2:
+      let p1=allPoints[i]
+      let p2=allPoints[i+1]
+      let p3=allPoints[i+2]
+
+      let seg1=p2-p1
+      let seg1Unit=seg1.normalize()
+      let seg1Normal=Vector2(x: seg1Unit.y,y: -seg1Unit.x)
+
+      let seg2=p3-p2
+      let seg2Unit=seg2.normalize()
+      let seg2Normal=Vector2(x: seg2Unit.y,y: -seg2Unit.x)
+
+      let segBetween=p3-p1
+      let segBetweenPerp=Vector2(x: segBetween.y,y: -segBetween.x)
+      var cornerNormal= segBetweenPerp.normalize()
+
+      var normalSide:float
+      var projectToBetween=seg1.dotProduct(segBetweenPerp)
+      if projectToBetween==0 :
+        continue
+      elif projectToBetween>0 :
+        normalSide= 1.0
+      elif projectToBetween<0 :
+        normalSide= -1.0
+
+      let halfLineWidth=drawerLineWidth*0.5
+      #Drawing Line with Triangles
+       
+      var s1a=p1+seg1Normal*halfLineWidth
+      var s1b=p2+seg1Normal*halfLineWidth
+      var s1c=p2-seg1Normal*halfLineWidth
+      var s1d=p1-seg1Normal*halfLineWidth
+
+      var s2a=p2+seg2Normal*halfLineWidth
+      var s2b=p3+seg2Normal*halfLineWidth
+      var s2c=p3-seg2Normal*halfLineWidth
+      var s2d=p2-seg2Normal*halfLineWidth
+
+      
+
+      var intersectionTestTop=lineIntersection(s1a,s1b,s2a,s2b)
+      if intersectionTestTop.isSome :
+        s1b=intersectionTestTop.get()
+        s2a=s1b
+        
+
+      var intersectionTestDown=lineIntersection(s1d,s1c,s2d,s2c)
+      if intersectionTestDown.isSome :
+        s1c=intersectionTestDown.get()
+        s2d=intersectionTestDown.get()
+        
+
+      if prevIntersectionTestTop.isSome :
+        s1a=prevIntersectionTestTop.get()
+        
+      if prevIntersectionTestDown.isSome :
+        s1d=prevIntersectionTestDown.get()
+        
+
+      
+      
+      
+
+       
+       
+      vertex2f(s1c.x, s1c.y);
+      vertex2f(s1b.x, s1b.y);
+      vertex2f(s1a.x, s1a.y);
+
+      
+      vertex2f(s1d.x, s1d.y); 
+      vertex2f(s1c.x, s1c.y);
+      vertex2f(s1a.x, s1a.y);
+
+      if i==allPoints.len-3 :
+        vertex2f(s2c.x, s2c.y);
+        vertex2f(s2b.x, s2b.y);
+        vertex2f(s2a.x, s2a.y);
+
+        
+        vertex2f(s2d.x, s2d.y); 
+        vertex2f(s2c.x, s2c.y);
+        vertex2f(s2a.x, s2a.y);
+
+        
+
+      #Implementing Join Types
+      
+      let np1=if normalSide == -1 : s1c else : s1b
+   
+      let np2=if normalSide == -1 : s2d else : s2a
+
+      var npc= if normalSide == -1.0 : s1b else :s1c
+
+      
+
+      if drawerLineJoin==JoinTypes.Miter :
+        var np3 = p2-(npc-p2)
+        if normalSide == -1.0 :
+          vertex2f(np3.x, np3.y); 
+          vertex2f(npc.x, npc.y); 
+          vertex2f(np1.x, np1.y); 
+          
+
+          vertex2f(np3.x, np3.y); 
+          vertex2f(np2.x, np2.y); 
+          vertex2f(npc.x, npc.y); 
+        else :
+          
+          vertex2f(np1.x, np1.y); 
+          vertex2f(npc.x, npc.y); 
+          vertex2f(np3.x, np3.y); 
+          
+          vertex2f(npc.x, npc.y);
+          vertex2f(np2.x, np2.y); 
+          vertex2f(np3.x, np3.y); 
+
+        
+      elif drawerLineJoin==JoinTypes.Bevel :
+        if normalSide == -1.0 :
+          vertex2f(npc.x, npc.y); 
+          vertex2f(np1.x, np1.y); 
+          vertex2f(np2.x, np2.y); 
+        else :
+          vertex2f(np2.x, np2.y); 
+          vertex2f(np1.x, np1.y); 
+          vertex2f(npc.x, npc.y); 
+      
+      elif drawerLineJoin==JoinTypes.Round :
+        var radius=(np1-npc).length
+        var beginAngle=rm.angle(Vector2( x: 1.0,y: 0.0), (np1-p2) )
+        var angDiff:float=rm.angle( (np1-p2),(np2-p2))
+        var arcPoints=getArcPoints( p2.x,p2.y,halfLineWidth,halfLineWidth,beginAngle,(beginAngle+angDiff),16 )
+        for n in countup(0, arcPoints.len - 3, 2) :
+          var ax,ay,bx,by:float
+
+         
+          #Fill Arc
+          
+          ax=arcPoints[n]
+          ay=arcPoints[n+1]
+
+          
+          bx=arcPoints[n+2]
+          by=arcPoints[n+3]
+
+          if n==0 :
+            ax=np1.x
+            ay=np1.y
+          else:
+            ax=arcPoints[n]
+            ay=arcPoints[n+1]
+
+          if n==arcPoints.len-4 :
+            bx=np2.x
+            by=np2.y
+          else :
+            bx=arcPoints[n+2]
+            by=arcPoints[n+3]
+          
+              
+          if normalSide == -1.0 :
+            vertex2f(bx, by); 
+            vertex2f(npc.x, npc.y); 
+            vertex2f(ax, ay); 
+            discard
+            
+          else :
+            vertex2f(ax, ay); 
+            vertex2f(npc.x, npc.y); 
+            vertex2f(bx, by); 
+            discard
+            
+        
+
+      prevIntersectionTestDown=intersectionTestDown
+      prevIntersectionTestTop=intersectionTestTop
+    
+    rlEnd()
+    
+      
+
+
+      
+    
+
+
+
+
 
 proc arc*(mode:DrawModes,arcType:ArcType, x:float,y:float,radius:float,angle1:float,angle2:float,segments:int=16) =
   var pi:float=3.1415926
@@ -445,9 +687,7 @@ proc ellipse*(mode:DrawModes,x:float,y:float,radiusX:float,radiusY:float) =
     line(allPoints)
   
 
-proc pixel*(x:float,y:float) =
-  var (tx,ty)=transformPoint(x,y)
-  drawPixel(int32(tx), int32(ty),drawerColor )
+
 
 
 
@@ -584,5 +824,5 @@ proc draw*( text:Text ,x:float=0.0,y:float=0.0, size:float=16, spacing:float=1.0
 
 
 #Export raylib colors
-export  rl.Color,LightGray,Gray,DarkGray,Yellow,Gold,Orange,Pink,Red,Maroon,Green,Lime,DarkGreen,SkyBlue,Blue,DarkBlue,Purple,Violet,DarkPurple,Beige,Brown,DarkBrown,White, Black,Blank,Magenta
+export  Color,LightGray,Gray,DarkGray,Yellow,Gold,Orange,Pink,Red,Maroon,Green,Lime,DarkGreen,SkyBlue,Blue,DarkBlue,Purple,Violet,DarkPurple,Beige,Brown,DarkBrown,White, Black,Blank,Magenta
 export  rl.Font

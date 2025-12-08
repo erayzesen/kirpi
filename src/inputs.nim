@@ -30,11 +30,11 @@ proc isMouseButtonDown*(button:rl.MouseButton):bool =
 proc isMouseButtonUp*(button:rl.MouseButton):bool =
     return rl.isMouseButtonUp(button)
 
-proc getMouseX*():int =
-    return rl.getMouseX()
+proc getMouseX*():float =
+    return float( rl.getMouseX() )
 
-proc getMouseY*():int =
-    return rl.getMouseY()
+proc getMouseY*():float =
+    return float( rl.getMouseY() )
 
 #Gamepad
 
@@ -69,11 +69,11 @@ proc setGamepadVibration*(gamepad:int, leftMotor:float, rightMotor:float, durati
     rl.setGamepadVibration(int32(gamepad), float32(leftMotor), float32(rightMotor), float32(duration)) 
 
 #Touch
-proc getTouchX*():int =
-    return int(rl.getTouchX() )
+proc getTouchX*():float =
+    return float(rl.getTouchX() )
 
-proc getTouchY*():int =
-    return int(rl.getTouchY() )
+proc getTouchY*():float =
+    return float(rl.getTouchY() )
 
 proc getTouchPointId*(index:int):int =
     return int(rl.getTouchPointId(int32(index)) )

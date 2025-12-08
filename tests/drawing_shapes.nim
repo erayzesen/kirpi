@@ -64,13 +64,13 @@ proc draw() =
     draw(newText("Polygon Sample - Star",getFont() ),460,290,24 )
 
     #Lines
-    setColor(Purple)
-    setLine(5)
+    setColor(250,250,250,128)
+    setLine(15,JoinTypes.Miter)
     line(
         100.0,500.0,
         200.0,500.0,
-        200.0,450.0,
-        250.0,450.0,
+        130.0,480.0,
+        getMouseX(),getMouseY()
     )
     line(
         250.0,450.0,
@@ -81,7 +81,7 @@ proc draw() =
         225.0,470.0,
     )
     setLine(1)
-    draw(newText("Line",getFont() ),128,470,24 )
+    #draw(newText("Line",getFont() ),128,470,24 )
 
     #Arc
     setColor(Orange)

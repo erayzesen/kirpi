@@ -132,8 +132,11 @@ newSpriteBatch(texture:var Texture, maxSprites:int=1000): SpriteBatch     #creat
 setColor (r:uint8, g:uint8,b:uint8, a:uint8)  #sets the color used for drawing.
 setColor (color:Color)     #sets the color used for drawing.	
 getColor () :Color   #gets the current color
-setLine(width:float)  #sets the line width.
-getLine():float   #gets the current line width
+setLine(width:float,joinType:JoinTypes=JoinTypes.Miter)  #sets the line width and join.
+setLineWidth(width:float) #sets the line width
+getLineWidth():float   #gets the current line width 
+setLineJoin(joinType:JoinTypes) # sets the line join
+getLineJoin() # gets the current line join
 setFont(font:rl.Font) #sets the font
 getFont() :Font   #gets the current font
 
