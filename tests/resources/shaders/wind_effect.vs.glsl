@@ -16,7 +16,7 @@ void main() {
     
     float normalizedY = vertexTexCoord.y; 
 
-    float windWave = sin(normalizedY * 3.0 + time * 4.0)*amount; 
+    float windWave = sin(normalizedY * 3.0 + time * 2.0)*amount; 
     
     float heightMultiplier = 1.0 - normalizedY; 
 

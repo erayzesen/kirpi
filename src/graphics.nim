@@ -1,6 +1,7 @@
 import raylib as rl
 import raymath as rm
 import rlgl as rlgl
+import std/strutils
 
 import tables,os,hashes,options
 
@@ -208,6 +209,7 @@ var fonts*: Table[Hash, rl.Font] = initTable[Hash, rl.Font]()
 ### Draw State Logic ### 
 
 
+
 var defaultFont*:Font
 proc getDefaultFont*():Font =
   result=defaultFont
@@ -222,7 +224,21 @@ type
     currentFont:Font
     
     
+#For easy hex colors
+proc Color*(hex: string): Color =
+  ## Converts a hexadecimal color string (e.g., "#d5e3ea" or "d5e3eaff") 
+  let cleanedHex = hex.strip(leading = true, trailing = true).replace("#", "").toUpper()
+  var hexValue: int = 0
+  case cleanedHex.len:
+  of 6:
+    let hexWithAlpha = cleanedHex & "FF"
+    hexValue = parseHexInt(hexWithAlpha)
+  of 8:
+    hexValue = parseHexInt(cleanedHex)
 
+  else:
+    return Color(r: 0, g: 0, b: 0, a: 0)
+  result = getColor(uint32( hexValue) )
 
 var globalDrawState:DrawState
 var stateStack*: seq[DrawState] = @[]
@@ -253,6 +269,9 @@ proc setColor* (r:int, g:int,b:int, a:int) =
 
 proc setColor* (color:Color) =
     globalDrawState.drawerColor=color
+
+proc setColor* (hexColor:string) =
+    globalDrawState.drawerColor=Color(hexColor)
 
 proc getColor * () :Color =
   result=globalDrawState.drawerColor
@@ -457,6 +476,8 @@ proc setShaderValue*(shader:var Shader, uniformName: string, value:var Texture) 
 
 ### End of Shader Methods ###
 
+
+### Drawing Operations ###
 
 proc pixel*(x:float,y:float) =
   var (tx,ty)=transformPoint(x,y)
@@ -919,6 +940,9 @@ proc clear*() =
 proc clear*(color:Color) =
     clearBackground(color)
 
+proc clear*(hexColor:string) =
+    clearBackground(Color(hexColor))
+
 
 proc rectangle*(mode:DrawModes,x:float,y:float,width:float,height:float,rx:float=0,ry:float=rx,segments:int=12)=
     var allPoints:seq[float]
@@ -1113,6 +1137,7 @@ proc draw*( text:Text ,x:float=0.0,y:float=0.0, size:float=16, spacing:float=1.0
   popMatrix()
   discard
 
+### End of Drawing Operations
 
 #Export raylib colors
 export  Color,LightGray,Gray,DarkGray,Yellow,Gold,Orange,Pink,Red,Maroon,Green,Lime,DarkGreen,SkyBlue,Blue,DarkBlue,Purple,Violet,DarkPurple,Beige,Brown,DarkBrown,White, Black,Blank,Magenta
