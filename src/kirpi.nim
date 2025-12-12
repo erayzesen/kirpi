@@ -1,6 +1,6 @@
 # Raylib
 
-import tables
+import tables,std/private/ospaths2
 import raylib as rl
 
 
@@ -113,16 +113,16 @@ proc initAppWindow(title:string,appSettings:AppSettings) =
 
   if appSettings.defaultTextureFilter==TextureFilterSettings.Nearest :
     graphics.defaultFilter=TextureFilters.Nearest
-
+  
   if appSettings.window.iconPath!="" :
     var iconIMG=loadImage(appSettings.window.iconPath)
     if isImageValid(iconIMG) :
       setWindowIcon(iconIMG)
     else :
-      var defaultIconIMG=loadImage("src/resources/icon.png")
+      var defaultIconIMG=loadImage(currentSourcePath.parentDir() & "/resources/icon.png")
       setWindowIcon(defaultIconIMG)
   else :
-    var defaultIconIMG=loadImage("src/resources/icon.png")
+    var defaultIconIMG=loadImage(currentSourcePath.parentDir() & "/resources/icon.png")
     setWindowIcon(defaultIconIMG)
 
   initAudioDevice()
