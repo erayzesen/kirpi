@@ -1,6 +1,6 @@
 # Raylib
 
-import tables
+import tables, std/private/ospaths2
 import raylib as rl
 
 
@@ -119,10 +119,10 @@ proc initAppWindow(title:string,appSettings:AppSettings) =
     if isImageValid(iconIMG) :
       setWindowIcon(iconIMG)
     else :
-      var defaultIconIMG=loadImage("src/resources/icon.png")
+      var defaultIconIMG=loadImage(currentSourcePath.parentDir() &  "/resources/icon.png")
       setWindowIcon(defaultIconIMG)
   else :
-    var defaultIconIMG=loadImage("src/resources/icon.png")
+    var defaultIconIMG=loadImage(currentSourcePath.parentDir() &  "/resources/icon.png")
     setWindowIcon(defaultIconIMG)
 
   initAudioDevice()
@@ -139,7 +139,7 @@ proc run*(title:string,load: proc(), update: proc(dt:float), draw: proc(), confi
   if config!=nil :
     config(kirpiApp.settings)
   initAppWindow(title,kirpiApp.settings)
-  graphics.defaultFont=newFont("src/resources/RobotoSlab-Regular.ttf")
+  graphics.defaultFont=newFont(currentSourcePath.parentDir() & "/resources/RobotoSlab-Regular.ttf")
   setFont(graphics.defaultFont)
   setColor(White)
 
