@@ -9,7 +9,7 @@ A lightweight 2D game framework featuring a clean, [Löve2D](https://love2d.org/
 
 **Supported Build Targets:** Web(Wasm),Linux,Windows,Macos,Android 
 
-> 🚧 **Note:** This project is currently under development and has not yet reached a stable release. If you like the project, you can support it with a star, try it out and report any issues or bugs, and contribute to its further development.
+
 
 ## Why kirpi?
 * Very small Web builds. An empty project ships at around 400–500 KB, and 150–200 KB when zipped — almost comparable to JavaScript game frameworks.
@@ -69,6 +69,8 @@ nimble install --depsOnly
 
 
 ## Documentation
+The examples repo is [here](https://github.com/erayzesen/kirpi-examples).
+
 Kirpi doesn’t have fancy tutorials yet. But honestly, the entire API is basically the cheatsheet below. We weren’t joking about the simplicity of the API.
 <details>
 <summary> Cheatsheet </summary>
