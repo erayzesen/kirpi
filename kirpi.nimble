@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.0"
+version       = "1.0.0"
 author        = "Eray Zesen"
 description   = "A minimal 2D game and ia framework. "
 license       = "MIT"
