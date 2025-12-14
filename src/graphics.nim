@@ -234,7 +234,7 @@ proc getDefaultFont*():Font =
 type 
   DrawState = object 
     drawerColor:Color=Color(White)
-    drawerLineWidth:float=1.0f
+    drawerLineWidth:float=1.0
     drawerLineJoin:JoinTypes=JoinTypes.Miter
     drawerLineBeginCap:CapTypes=CapTypes.None
     drawerLineEndCap:CapTypes=CapTypes.None
