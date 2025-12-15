@@ -6,7 +6,8 @@ import rsc
 import hashes
 
 
-#Emscripten /Web Main Loop Fix Wrapper (We don't want to use Asyncify flags on web)
+#Emscripten /Web Main Loop Fix Wrapper (We don't want to use Asyncify on the web targets)
+#https://github.com/raysan5/raylib/wiki/Working-for-Web-(HTML5)#41-avoid-raylib-whilewindowshouldclose-loop
 when defined(emscripten):
   type GameData = object
     shouldClose: bool

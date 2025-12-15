@@ -12,7 +12,7 @@ A lightweight 2D game framework featuring a clean, [Löve2D](https://love2d.org/
 
 
 ## Why kirpi?
-* Very small Web builds. An empty project ships at around 400–500 KB, and 150–200 KB when zipped — almost comparable to JavaScript game frameworks.
+* Very small Web builds for a WASM-based runtime. Performance-first builds of an empty project ship at ~750 KB uncompressed and ~350 KB zipped, comparable to many JavaScript game frameworks.
 * Easy to learn with a minimal, well-placed abstraction layer. Want to use an ECS library? Bring your own. Need a physics engine or just a simple collider library? Your call.
 * Straightforward multi-platform builds thanks to the configuration in the template project, including Android. Each platform also gets a clean, organized folder structure.
 * You write your game in Nim, a pleasant and elegant language that’s easy to pick up and often delivers near-C performance. Nim uses ARC (Automatic Reference Counting), a deterministic, low-overhead memory model similar to C++’s RAII.

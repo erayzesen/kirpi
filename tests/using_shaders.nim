@@ -29,15 +29,15 @@ proc load() =
 
     # load shaders
     windShader=newShader("tests/resources/shaders/wind_effect.vs.glsl","tests/resources/shaders/wind_effect.fs.glsl")
-    windShader.setShaderValue("amount",50.0) # set wind strength
+    windShader.setValue("amount",50.0) # set wind strength
     
     waterShader=newShader("tests/resources/shaders/water_effect.vs.glsl","tests/resources/shaders/water_effect.fs.glsl")
     
     # load wave shader (fs only, using default vs)
     waveShader=newShader("","tests/resources/shaders/wave_effect.fs.glsl")
-    waveShader.setShaderValue("amplitude",0.1) # set swing amount
-    waveShader.setShaderValue("frequency",20.0) # set wave density
-    waveShader.setShaderValue("speed",3.0) # set animation speed
+    waveShader.setValue("amplitude",0.1) # set swing amount
+    waveShader.setValue("frequency",20.0) # set wave density
+    waveShader.setValue("speed",3.0) # set animation speed
     
     # load parallax shader (fs only)
     parallaxShader=newShader("","tests/resources/shaders/parallax_effect.fs.glsl")
@@ -46,10 +46,10 @@ proc load() =
 proc update( dt:float) =
     # update shader time uniforms
     # pass current time for animation
-    windShader.setShaderValue("time",getTime())
-    waterShader.setShaderValue("time",getTime())
-    waveShader.setShaderValue("time",getTime())
-    parallaxShader.setShaderValue("time",getTime())
+    windShader.setValue("time",getTime())
+    waterShader.setValue("time",getTime())
+    waveShader.setValue("time",getTime())
+    parallaxShader.setValue("time",getTime())
 
     # calculate fish vertical sine wave movement
     fishPosY=sin( getTime()*0.4 )*16
