@@ -12,8 +12,8 @@ when defined(emscripten):
     let htmlPath="releases/html5/" & projectPathName
     createDirAll(htmlPath)
     --define:GraphicsApiOpenGlEs2
-    # --define:NaylibWebResources
-    # switch("define", "NaylibWebResourcesPath=resources")
+    --define:NaylibWebResources
+    switch("define", "NaylibWebResourcesPath=tests/resources")
     # switch("define", "NaylibWebPthreadPoolSize=2")
     # --define:NaylibWebAsyncify
     --os:linux

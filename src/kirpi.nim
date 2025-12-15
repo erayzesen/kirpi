@@ -6,6 +6,19 @@ import rsc
 import hashes
 
 
+#Emscripten /Web Main Loop Fix Wrapper (We don't want to use Asyncify flags on web)
+when defined(emscripten):
+  type GameData = object
+    shouldClose: bool
+
+  var gameData: GameData
+  proc emscripten_set_main_loop_arg(
+    f: proc(arg: pointer) {.cdecl.},
+    arg: pointer,
+    fps: cint,
+    simulateInfiniteLoop: cint
+  ) {.importc, cdecl, header: "<emscripten/emscripten.h>".}
+
 import graphics, inputs, sound, window
 
 type
@@ -132,6 +145,29 @@ proc initAppWindow(title:string,appSettings:AppSettings) =
   setExitKey(KeyboardKey.Null)
   
 
+proc appLoop(arg: pointer) {.cdecl.} =
+  #Update Sound Streams
+  for id in soundStreamSources.keys:
+    rl.updateMusicStream(soundStreamSources[id])
+  
+  kirpiApp.update(getFrameTime() ) # update 
+
+  beginDrawing()
+  kirpiApp.draw() # draw
+  
+  endDrawing()
+
+  
+  let dt = 1.0 / 60.0
+  fpsTimer += dt
+  fps=getFPS()
+  if fpsTimer >= 1.0:
+    frameMS=getFrameTime() * 1000.0
+    if enablePrintFrametime :
+      echo "Frame Time: " & $frameMS & " ms"
+    if enablePrintFPS :
+      echo "FPS: " & $fps
+    fpsTimer = 0.0
 
 
 proc run*(title:string,load: proc(), update: proc(dt:float), draw: proc(), config : proc (settings : var AppSettings)=nil) =
@@ -155,29 +191,11 @@ proc run*(title:string,load: proc(), update: proc(dt:float), draw: proc(), confi
 
   kirpiApp.load() # load 
 
-  while not windowShouldClose() :
-    #Update Sound Streams
-    for id in soundStreamSources.keys:
-      rl.updateMusicStream(soundStreamSources[id])
-    
-    kirpiApp.update(getFrameTime() ) # update 
-
-    beginDrawing()
-    kirpiApp.draw() # draw
-    
-    endDrawing()
-
-    
-    let dt = 1.0 / 60.0
-    fpsTimer += dt
-    fps=getFPS()
-    if fpsTimer >= 1.0:
-      frameMS=getFrameTime() * 1000.0
-      if enablePrintFrametime :
-        echo "Frame Time: " & $frameMS & " ms"
-      if enablePrintFPS :
-        echo "FPS: " & $fps
-      fpsTimer = 0.0
+  when defined(emscripten):
+     emscripten_set_main_loop_arg(appLoop,addr gameData,0.cint, 1.cint)
+  else :
+    while not windowShouldClose() :
+      appLoop(nil)
    
 
 
