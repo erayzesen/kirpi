@@ -630,9 +630,7 @@ proc line*(points:varargs[float]) =
 
         var normalSide:float
         var projectToBetween=seg1.dotProduct(segBetweenPerp)
-        if projectToBetween==0 :
-          continue
-        elif projectToBetween>0 :
+        if projectToBetween>0 :
           normalSide= 1.0
         elif projectToBetween<0 :
           normalSide= -1.0
