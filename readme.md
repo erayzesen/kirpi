@@ -38,7 +38,7 @@ proc load() =
     sampleText=newText("Hello World!",getDefaultFont())
 
 proc update(dt: float) =
-    if isKeyPressed(KeyEscape):
+    if isKeyPressed(KeyboardKey.Escape):
         quit()
 
 proc draw() =
