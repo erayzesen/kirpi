@@ -86,16 +86,16 @@ proc pop*() =
     
 
 proc translate*(dx, dy: float) =
-  globalTransform = matMul(matTranslate(dx, dy), globalTransform)
+  globalTransform = matMul( globalTransform,matTranslate(dx, dy))
 
 proc rotate*(angle: float) =
-  globalTransform = matMul(matRotate(angle), globalTransform)
+  globalTransform = matMul(globalTransform,matRotate(angle))
 
 proc scale*(sx, sy: float) =
-  globalTransform = matMul(matScale(sx, sy), globalTransform)
+  globalTransform = matMul(globalTransform,matScale(sx, sy))
 
 proc shear*(shx, shy: float) =
-  globalTransform = matMul(matShear(shx, shy), globalTransform)
+  globalTransform = matMul(globalTransform,matShear(shx, shy))
 
 proc transformPoint*(x, y: float): (float, float) =
   let t = globalTransform
@@ -111,54 +111,10 @@ proc replaceTransform*(t: Transform) =
 proc applyTransform*(t: Transform) =
   globalTransform = matMul(t, globalTransform)
 
-# Polar decomposition 2x2 matris için
-proc decompose2D(m: Transform): tuple[rotation: float, scaleX: float, scaleY: float, shear: float] =
-  # 2x2 matris
-  let A = float(m.a)
-  let B = float(m.b)
-  let C = float(m.c)
-  let D = float(m.d)
-
-  # Yaklaşık rotation
-  var theta = arctan2(B, A)
-  let cosR = cos(theta)
-  let sinR = sin(theta)
-
-  # R^T * M = S
-  let Sxx = cosR*A + sinR*B
-  let Sxy = cosR*C + sinR*D
-  let Syx = -sinR*A + cosR*B
-  let Syy = -sinR*C + cosR*D
-
-  let scaleX = Sxx
-  let scaleY = Syy
-  let shear  = Sxy / scaleY  # shearX
-
-  (theta, scaleX, scaleY, shear)
-
-proc getScale*(): tuple[sx:float, sy:float] =
-  let (_, sx, sy, _) = decompose2D(globalTransform)
-  result=(sx, sy)
-  
-proc getScale*(transform:Transform): tuple[sx:float, sy:float] =
-  let (_, sx, sy, _) = decompose2D(transform)
-  result=(sx, sy)
-
-proc getRotation*(): float =
-  let (rot, _, _, _) = decompose2D(globalTransform)
-  result=rot
-
-proc getRotation*(transform:Transform): float =
-  let (rot, _, _, _) = decompose2D(transform)
-  result=rot
-
-proc getShear*(): float =
-  let (_, _, _, sh) = decompose2D(globalTransform)
-  result=sh
-
-proc getShear*(transform:Transform): float =
-  let (_, _, _, sh) = decompose2D(transform)
-  result=sh
+proc getAverageScale(t: Transform): float =
+  let sx = sqrt(t.a*t.a + t.b*t.b)
+  let sy = sqrt(t.c*t.c + t.d*t.d)
+  result=(sx + sy) * 0.5
 
 proc isOrientationFlipped(t: Transform): bool =
   (t.a * t.d - t.b * t.c) < 0  
@@ -586,8 +542,8 @@ proc line*(points:varargs[float]) =
   let halfLineWidth=globalDrawState.drawerLineWidth*0.5
 
   #PreCalculate Full Smooth Segment Count for Rounded Cap,Join
-  var (sx,sy)=getScale()
-  var maxScale=max(sx,sy)
+  
+  var maxScale=getAverageScale(globalTransform)
   var fullSmoothSegCount:int=getSmoothSegmentCount(TAU,halfLineWidth,maxScale)
   var divTAU:float=1/TAU
   var roundedCapSegCount:int=6
@@ -978,8 +934,8 @@ proc arc*(mode:DrawModes, x:float,y:float,radius:float,angle1:float,angle2:float
   arc(mode,ArcType.Pie,x,y,radius,angle1,angle2,segments)
 
 proc circle*(mode:DrawModes,x:float,y:float,radius:float) =
-  var (sx,sy)=getScale()
-  var maxScale=max(sx,sy)
+  
+  var maxScale=getAverageScale(globalTransform)
   var segments:int=getSmoothSegmentCount(TAU,radius,maxScale)
 
   var allPoints:seq[float]=getArcPoints(x,y,radius,radius,0,TAU,segments)
@@ -1046,8 +1002,7 @@ proc quad*(mode:DrawModes,x1:float,y1:float,x2:float,y2:float,x3:float,y3:float,
 
             
 proc ellipse*(mode:DrawModes,x:float,y:float,radiusX:float,radiusY:float) =
-  var (sx,sy)=getScale()
-  var maxScale=max(sx,sy)
+  var maxScale=getAverageScale(globalTransform)
   var maxRadius=max(radiusX,radiusY)
   var segments:int=getSmoothSegmentCount(TAU,maxRadius,maxScale)
 
