@@ -213,7 +213,7 @@ proc Color*(hex: string): Color =
     return Color(r: 0, g: 0, b: 0, a: 0)
   result = getColor(uint32( hexValue) )
 
-var globalDrawState:DrawState
+var globalDrawState:DrawState=DrawState()
 var stateStack*: seq[DrawState] = @[]
 
 

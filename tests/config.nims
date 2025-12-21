@@ -30,8 +30,17 @@ when defined(emscripten):
         --clang.cpp.exe:emcc
         --clang.cpp.linkerexe:emcc
 
-    --passL:"-sASYNCIFY"          # Enables async transformation of sync code
-    #--passL:"-sALLOW_ASYNC_C_FUNCTIONS" # Allows Asyncify to work on C functions
+    # Set the stack size to 5MB to prevent 'memory access out of bounds' errors.
+    # This often happens in release builds due to aggressive optimizations.
+    # If you still encounter memory access errors, feel free to increase this value.
+    --passL:"-sSTACK_SIZE=5MB"
+
+    # Allow the heap to grow dynamically if the game needs more memory for assets.
+    --passL:"-sALLOW_MEMORY_GROWTH=1"
+
+    # Ensure the initial memory is large enough for a typical game (e.g., 32MB or 64MB).
+    --passL:"-sINITIAL_MEMORY=33554432" # 32MB
+    
     # --mm:orc
     --threads:off
     --panics:on

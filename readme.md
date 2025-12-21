@@ -66,6 +66,27 @@ nimble install --depsOnly
 
  This repo also includes extensively customized compiler configuration files, thanks in part to the Naylib community, which automate nearly everything for Android builds. Additionally, we provide customized Emscripten configurations for Web builds. In short, you can deploy your project to Android with just a few commands, and to other platforms with a single command. Detailed build instructions are available in our template repository.
 
+## Learning Samples 
+<table>
+  <tr>
+    <td align="center">
+      <b>Flappy Bird</b><br>
+      <a href="https://erayzesen.github.io/kirpi-flappy-bird-game/">
+        <img src="https://github.com/erayzesen/kirpi-flappy-bird-game/raw/master/media/gameplay.gif" width="250">
+      </a><br>
+      <a href="https://github.com/erayzesen/kirpi-flappy-bird-game">🦔 Repo</a> | 
+      <a href="https://erayzesen.github.io/kirpi-flappy-bird-game/">🎮 Play Now</a>
+    </td>
+    <td align="center">
+      <b>Snake</b><br>
+      <a href="URL_BURAYA">
+        <img src="https://github.com/erayzesen/kirpi-snake-game/raw/master/media/gameplay.gif" width="250">
+      </a><br>
+      <a href="https://github.com/erayzesen/kirpi-snake-game">🦔 Repo</a> | 
+      <a href="https://erayzesen.github.io/kirpi-snake-game/">🎮 Play Now</a>
+    </td>
+  </tr>
+</table>
 
 
 ## Documentation
