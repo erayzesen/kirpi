@@ -311,6 +311,12 @@ isResized(): bool  #checks if window has been resized last frame
 setTitle(title:string)    #sets title for window
 getWidth() : int   #returns current window width
 getHeight() : int  #returns current window height
+
+#JAVASCRIPT
+eval(code: string): string   # Executes JS code and returns result as string.
+createCallback(cb: JSCallback; jsEvent: cstring)  # Registers a callback that receives JS event data as JSON. (JSCallback type is: proc(arg: cstring){.cdecl.}  )
+createCallback(cb: JSCallbackVoid; jsEvent: cstring) # Registers a more performant callback thanks to no event data arguments (JSCallbackVoid type is: proc(){.cdecl.} )
+
 ```
 </details>
 
