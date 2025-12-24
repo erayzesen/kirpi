@@ -309,14 +309,19 @@ createCallback(cb: JSCallbackVoid; jsEvent: cstring) # Registers a more performa
 </details>
 
 ## Contributing
-* To contribute code to the project, please try to follow Nim’s standard library [style guide](https://nim-lang.org/docs/nep1.html). We generally strive to maintain consistency with it throughout this project.(You might not like this guide, but after all, it’s a prepared style guide that everyone can access and use collectively.)
-* We avoid using macros and metaprogramming unless absolutely necessary. Please refrain from using them unnecessarily; this project is intended to be readable even by newcomers to Nim, in its simplest form.
-* We aim to keep the API minimal and avoid expanding or changing it unless truly necessary. Feel free to suggest ideas, but please don’t take offense at any potential negative feedback.
-* This project uses Naylib (Nim’s Raylib wrapper) as its backend. The backend is actually where we are most flexible. If you have ideas for alternative implementations—for example, a Pixi.js backend for the JS target, or a backend that could extend the framework to consoles and more platforms, or a fully Nim-written, cross-platform library to replace Raylib—these kinds of contributions are very welcome.
-* You can also contribute separate Nim modules aimed at the ecosystem rather than the framework repository itself, which we really appreciate. We can even list these modules here.
-* If you’re not interested in development, creating tutorials is a significant way to contribute, and we’d be happy to share them in our repository.
-* If you’re not interested in development and can’t create tutorials, reporting bugs or opening issues about usability problems is also highly valued.
+To contribute code to the project, please try to follow Nim’s standard library [style guide](https://nim-lang.org/docs/nep1.html). We generally strive to maintain consistency with it throughout this project.(You might not like this guide, but after all, it’s a prepared style guide that everyone can access and use collectively.)
+### Core principles
+* ***Do not use macros or metaprogramming.*** This project does not need them and should not rely on them. It is important that the framework and its internal code remain understandable with zero learning curve, using only basic Nim knowledge.
+* ***Avoid unnecessary abstractions.*** Prefer primitive types in API method arguments (e.g. float, int, bool). Only group values using tuple when grouping is actually meaningful. Use seq or array for collections. For example, defining a vertex format explicitly as ```tuple[x, y, u, v: float]``` is preferred over introducing custom types like ```Vertex2D```. The intent is for an intermediate Nim developer to understand the expected data layout immediately using Nim language knowledge alone, without learning framework-specific types or relying on detailed API documentation.
+* ***Preserve minimalism.*** We aim to keep the API small and stable, and to avoid expanding or changing it unless it is truly necessary. Suggestions are always welcome, but please don’t take offense if an idea is declined. If what you are building can live as a separate module, plugin, or library in an external repository, prefer that approach. This framework is intentionally designed as a small core API meant to be surrounded by an ecosystem of extensions. If you believe a missing capability in the core API genuinely prevents this, then open a PR and let’s discuss it.
+* ***Treat the backend as a replaceable layer.*** This project currently uses Naylib (Nim’s Raylib wrapper) as its backend. However, if you inspect the source code, you’ll see that Raylib is used at an arm’s length, making it entirely feasible to add alternative backends alongside it. The graphics API is largely built on top of Raylib’s rlgl layer and its OpenGL-oriented calls. Because of this, ideas or experiments around different backends are very welcome. As long as the approach remains pragmatic, the backend layer is intentionally the most flexible part of this project.  
+
+### Other ways to contribute
+
+* Write and share plugins or modules that are either fully dependent on the framework or can be used independently while working well with it (ECS, physics, GUI, etc.)
+* Open issues to report bugs or missing features.
+* Create tutorials or documentation related to the framework.
+* If you enjoy **kirpi**, share your thoughts on social media to help others discover it :) Don’t forget to share your work(game, prototype, creative coding projects ) with the `#madewithkirpi` tag.
 
 ## What's mean kirpi?
-"Hedgehog” in my native language Turkish is “kirpi.” 
-Its pronunciation is /keer-pee/.We like hedgehogs and we share the games and prototypes we build with kirpi using the **#madewithkirpi** tag.
+"Hedgehog” in my native language Turkish is “kirpi.”  Its pronunciation is /keer-pee/.
