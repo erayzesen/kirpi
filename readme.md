@@ -67,11 +67,19 @@ However, for smooth builds across all supported platforms and an ideal folder st
     </td>
     <td align="center">
       <b>Snake</b><br>
-      <a href="URL_BURAYA">
+      <a href="https://github.com/erayzesen/kirpi-snake-game">
         <img src="https://github.com/erayzesen/kirpi-snake-game/raw/master/media/gameplay.gif" width="250">
       </a><br>
       <a href="https://github.com/erayzesen/kirpi-snake-game">🦔 Repo</a> | 
       <a href="https://erayzesen.github.io/kirpi-snake-game/">🎮 Play Now</a>
+    </td>
+    <td align="center">
+      <b>Simple Platformer</b><br>
+      <a href="https://github.com/erayzesen/kirpi-simple-platformer">
+        <img src="https://github.com/erayzesen/kirpi-simple-platformer/raw/master/media/gameplay.gif" width="250">
+      </a><br>
+      <a href="https://github.com/erayzesen/kirpi-simple-platformer">🦔 Repo</a> | 
+      <a href="https://erayzesen.github.io/kirpi-simple-platformer/">🎮 Play Now</a>
     </td>
   </tr>
 </table>
