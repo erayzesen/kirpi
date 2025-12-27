@@ -5,8 +5,7 @@
 
 </div>
   
- ***Stubbornly Simple!***
-
+ 
 A lightweight 2D game framework featuring a clean, [Löve2D](https://love2d.org/)-inspired graphics API (Löve2D developers will feel right at home). It uses [Naylib](https://github.com/planetis-m/naylib) (Raylib) as its well-maintained cross-platform backend within the Nim ecosystem.
 
 **Supported Build Targets:** Web(Wasm),Linux,Windows,Macos,Android 
