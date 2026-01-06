@@ -6,22 +6,33 @@
 </div>
   
  
-A lightweight 2D game framework featuring a clean, [Löve2D](https://love2d.org/)-inspired graphics API (Löve2D developers will feel right at home). It uses [Naylib](https://github.com/planetis-m/naylib) (Raylib) as its well-maintained cross-platform backend within the Nim ecosystem.
+Kirpi aims to be an elegant framework for the Nim language, enabling you to create 2D **creative coding** projects or awesome **2D games**. The graphics approach is inspired by [Löve2D](https://love2d.org/) (LÖVE2D users will feel right at home).
 
-**Supported Build Targets:** Web(Wasm),Linux,Windows,Macos,Android 
+Currently, it uses Naylib (the most maintained and crowded Nim wrapper for Raylib) as its backend. Consequently, it can target **Web/WASM,Linux, Windows, macOS, and Android**. In the future, new backends might be added or existing ones might change; however, the Kirpi API you write today shall remain the same. Your applications and modules will continue to function thanks to this flexible and pragmatic approach.
 
 
 
 ## Why kirpi?
-* Very small Web builds for a WASM-based runtime. Performance-first builds of an empty project ship at ~750 KB uncompressed and ~350 KB zipped, comparable to many JavaScript game frameworks.
-* Easy to learn with a minimal, well-placed abstraction layer. Want to use an ECS library? Bring your own. Need a physics engine or just a simple collider library? Your call.
-* Straightforward multi-platform builds thanks to the configuration in the template project, including Android. Each platform also gets a clean, organized folder structure.
-* You write your game in Nim, a pleasant and elegant language that’s easy to pick up and often delivers near-C performance. Nim uses ARC (Automatic Reference Counting), a deterministic, low-overhead memory model similar to C++’s RAII.
+* **Minimal API:** Kirpi features a carefully curated and purposeful abstraction. While it allows you to do a lot, there is very little you actually need to learn. With basic programming knowledge and a quick glance at the Nim docs, you can jump right in.
+* **A Great (or Aspiring to be Great) 2D Graphics API:** It covers almost every option found in vector software, except for boolean operations (which you can implement as an independent module). Visualizing your code is both fun and takes only seconds. Plus, it aims to do this while providing options for maximum performance.
+* **Built for Building Modules and Tools:** Kirpi was designed as a core API that is fun to use standalone, as a concept of how 2D development could be better. However, it also aims to stay out of your way if you want to do more. Can you develop external modules for things missing in Kirpi? We actually encourage it—go ahead. Is Kirpi blocking you from doing so? Open an issue and let’s discuss it.
+* **Very small Web builds for a WASM-based runtime:** Performance-first builds of an empty project ship at ~750 KB uncompressed and ~350 KB zipped, comparable to many JavaScript game frameworks. It also features a well-written JavaScript bridge for adapting SDKs and plugins.
+* **Solid Support on Supported Platforms:** There is a project template with configurations that handle most of the heavy lifting for Android and other platforms. Improvements regarding platform configurations happen directly within the project template repository.
+* **Survival and Backward Compatibility:** Kirpi decouples its API and workflow from the backend. By keeping the API consistent while remaining pragmatic about the backend, it ensures that games and tools developed with Kirpi remain functional and portable for years. If a backend issue arises, it's easy to fix or swap.
 
+## Why Nim?
+* Write your games and modules elegantly, as if using a scripting language, but get C-like performance. With Nim’s ARC/ORC memory management—similar to C++'s RAII but more modern—you don't just get massive performance; you also don't have to worry about memory safety most of the time. No need to write logic in a script and extensions in C/C++ for performance. Just sit down and write everything in one language: Nim.
 
-And really, the motivation behind Kirpi explains it best:
-tiny web builds, a fun and elegant language to work in, great performance, a minimal API you can build an ecosystem around, and fully compiled (non-VM) games.
+* Get incredibly small binaries on almost every platform.
 
+* Benefit from a mature standard library that answers most of your needs.
+
+* Nim is a general-purpose language that can target C, C++, JS, and Objective-C, making it useful far beyond just game development.
+
+## There are Great Game Engines Out There Today
+I completely agree. As the creator of this project, I also prefer popular engines for projects where the scale and requirements demand it. However, after over 10 years of game development, I can tell you this: Hey friend, most 2D games don't actually need more than a framework like this and a few simple modules. You don't need to fight giant physics engine APIs just to make a simple platformer. You don't need to carry the weight of scripting runtimes and massive abstraction layers for a 3-match puzzle game. You don't have to make players wait to download dozens of megabytes for small-to-midscale games made with Unity or Godot. While watching people brag about rendering 10-15k bullets using crazy optimizations and C++ plugins in certain engines, here, a "magazine" of at least 70k-80k bullets is waiting for you. And I'm not even mentioning compile times or toolchains you might never use for 2D.
+
+On the other hand, this framework (and even Nim itself) has such a low learning curve that you won't even feel like you're choosing it instead of your current engines and languages. You can easily fit all of this right alongside what you already have.
 
 
 ## Getting Started
