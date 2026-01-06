@@ -326,6 +326,8 @@ createCallback(cb: JSCallbackVoid; jsEvent: cstring) # Registers a more performa
 ```
 </details>
 
+#### Confused, or have questions and issues you need quick answers for? Then why not say hello [here](https://github.com/erayzesen/kirpi/discussions/7)?
+
 ## Contributing
 To contribute code to the project, please try to follow Nim’s standard library [style guide](https://nim-lang.org/docs/nep1.html). We generally strive to maintain consistency with it throughout this project.(You might not like this guide, but after all, it’s a prepared style guide that everyone can access and use collectively.)
 ### Core principles
