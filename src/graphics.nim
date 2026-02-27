@@ -61,18 +61,23 @@ func matInverse*(t: Transform): Transform =
   result.tx = (t.c*t.ty - t.d*t.tx) * invDet
   result.ty = (t.b*t.tx - t.a*t.ty) * invDet
 
-proc newTransform*(x,y,r,sx,sy,ox,oy,kx,ky: float): Transform =
-  let cr = cos(r)
-  let sr = sin(r)
 
-  result.a  =  cr * sx + ky * sr * sy
+proc newTransform*(x, y, r, sx, sy, ox, oy, kx, ky: float): Transform =
+  let 
+    cr = cos(r)
+    sr = sin(r)
+
+  # Standard Affine 2D Matrix (Rotation -> Scale -> Skew)
+  result.a  =  cr * sx - ky * sr * sy
   result.b  =  sr * sx + ky * cr * sy
-  result.c  = -sr * sx + kx * cr * sy
-  result.d  =  cr * sy + kx * sr * sy
+  result.c  =  kx * cr * sx - sr * sy
+  result.d  =  kx * sr * sx + cr * sy
 
-  # translation (origin’e göre düzeltilmiş)
+  # Translation (According to the origin)
   result.tx = x - (result.a * ox + result.c * oy)
   result.ty = y - (result.b * ox + result.d * oy)
+
+
 
 var globalTransform*: Transform = matIdentity()
 var transformStack*: seq[Transform] = @[]
@@ -193,7 +198,7 @@ proc getDefaultFont*():Font =
 
 type 
   DrawState = object 
-    drawerColor:Color=Color(White)
+    drawerColor:Color=White
     drawerLineWidth:float=1.0
     drawerLineJoin:JoinTypes=JoinTypes.Miter
     drawerLineBeginCap:CapTypes=CapTypes.None
@@ -337,12 +342,12 @@ proc newFont*(filename:string, antialias:bool=true, rasterSize:int=32): Font =
 
 proc newShader*(vertexShaderFile: string, fragmentShaderFile: string): Shader =
   # Normalize file paths
-  let vPath = vertexShaderFile.normalizedPath()
-  let fPath = fragmentShaderFile.normalizedPath()
+  #let vPath = vertexShaderFile.normalizedPath()
+  #let fPath = fragmentShaderFile.normalizedPath()
 
   # Build a unique key for hashing, separator reduces collision risk
-  let keyString = vPath & "|" & fPath
-  let hashID: Hash = keyString.hash()
+  #let keyString = vPath & "|" & fPath
+  #let hashID: Hash = keyString.hash()
 
   result=Shader(rShader:rl.loadShader(vertexShaderFile, fragmentShaderFile))
   
@@ -399,8 +404,6 @@ proc add*(spriteBatch: var SpriteBatch,x,y:float,r:float=0,sx:float=1,sy:float=1
 
 proc add*(spriteBatch: var SpriteBatch, quad:Quad, x,y:float,r:float=0,sx:float=1,sy:float=1,ox:float=0,oy:float=0,kx:float=0,ky:float=0):int =
   var t:Transform=newTransform(x,y,r,sx,sy,ox,oy,kx,ky)
-  let defWidth=spriteBatch.defWidth
-  let defHeight=spriteBatch.defHeight
   var q=quad
   let id=spriteBatch.data.len
   spriteBatch.data.add( (q,t) )
@@ -593,7 +596,6 @@ proc line*(points:varargs[float]) =
 
         let segBetween=p3-p1
         let segBetweenPerp=Vector2(x: segBetween.y,y: -segBetween.x)
-        var cornerNormal= segBetweenPerp.normalize()
 
         var normalSide:float
         var projectToBetween=seg1.dotProduct(segBetweenPerp)
@@ -913,11 +915,7 @@ proc polygon*(mode:DrawModes,points:varargs[float]) =
 
 
 proc arc*(mode:DrawModes,arcType:ArcType, x:float,y:float,radius:float,angle1:float,angle2:float,segments:int=16) =
-  var pi:float=3.1415926
-  var angleBegin=angle1
-  var angleDiff=angle2-angle1
-  var angleStep=angleDiff/float(segments)
-
+  
   var allPoints:seq[float]=getArcPoints(x,y,radius,radius,angle1,angle2,segments)
 
   if arcType==Pie :
@@ -1106,14 +1104,14 @@ proc draw * ( spriteBatch:SpriteBatch, x:float=0,y:float=0) =
     translate(x,y)
     applyTransform(t)
 
-    let p1x = float(q.x)
-    let p1y = float(q.y)
-    let p2x = float(q.x + q.w)
-    let p2y = float(q.y)
-    let p3x = float(q.x + q.w)
-    let p3y = float(q.y + q.h)
-    let p4x = float(q.x)
-    let p4y = float(q.y + q.h)
+    let p1x = 0.0
+    let p1y = 0.0
+    let p2x = q.w.float
+    let p2y = 0.0
+    let p3x = q.w.float
+    let p3y = q.h.float
+    let p4x = 0.0
+    let p4y = q.h.float
 
     let (v1x, v1y) = transformPoint(p1x, p1y)
     let (v2x, v2y) = transformPoint(p2x, p2y)
