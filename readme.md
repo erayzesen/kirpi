@@ -322,6 +322,11 @@ createCallback(cb: JSCallbackVoid; jsEvent: cstring) # Registers a more performa
 ```
 </details>
 
+## Pairs Well With
+
+- [miniecs](https://github.com/erayzesen/miniecs) - A minimalist ECS library with a philosophy similar to kirpi.
+
+- [nim-tiled](https://github.com/SkyVault/nim-tiled) - It’s a project that parses [Tiled](https://www.mapeditor.org/) (Tilemap Editor) maps and makes them ready to use in the Nim language. Don’t forget to visit our [wiki page](https://github.com/erayzesen/kirpi/wiki/How-to-use-kirpi-with-nim%E2%80%90tiled%3F) explaining how to use it in your **kirpi** project.
 
 ## Contributing
 To contribute code to the project, please try to follow Nim’s standard library [style guide](https://nim-lang.org/docs/nep1.html). We generally strive to maintain consistency with it throughout this project.(You might not like this guide, but after all, it’s a prepared style guide that everyone can access and use collectively.)
