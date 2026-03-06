@@ -28,19 +28,19 @@ proc load() =
     sky=newTexture("tests/resources/sky.png")
 
     # load shaders
-    windShader=newShader("tests/resources/shaders/wind_effect.vs.glsl","tests/resources/shaders/wind_effect.fs.glsl")
+    windShader=newShader("tests/resources/shaders/","wind_effect")
     windShader.setValue("amount",50.0) # set wind strength
     
-    waterShader=newShader("tests/resources/shaders/water_effect.vs.glsl","tests/resources/shaders/water_effect.fs.glsl")
+    waterShader=newShader("tests/resources/shaders/","water_effect")
     
     # load wave shader (fs only, using default vs)
-    waveShader=newShader("","tests/resources/shaders/wave_effect.fs.glsl")
+    waveShader=newShader("tests/resources/shaders/","wave_effect")
     waveShader.setValue("amplitude",0.1) # set swing amount
     waveShader.setValue("frequency",20.0) # set wave density
     waveShader.setValue("speed",3.0) # set animation speed
     
     # load parallax shader (fs only)
-    parallaxShader=newShader("","tests/resources/shaders/parallax_effect.fs.glsl")
+    parallaxShader=newShader("tests/resources/shaders/","parallax_effect")
    
 
 proc update( dt:float) =

@@ -2,104 +2,89 @@
 #   Github: https://github.com/erayzesen/kirpi
 #   License information: https://github.com/erayzesen/kirpi/blob/master/LICENSE
 
-import raylib as rl
-import tables
+import hashes
+
+
+#backend
+import backends/naylib/sound_end
 
 type 
     SoundType* = enum
         Static,
         Stream
 
-    Sound* = object 
-        sourceStatic*: rl.Sound
-        sourceStreamID*: int = -1
+    SoundBase* = object 
+        id:Hash
         sourceType*: SoundType
 
-    SoundStream = ptr rl.Music
+    Sound* = ref SoundBase 
 
 
-var nextSourceStreamID:int=0
-var soundStreamSources*: Table[int, rl.Music] =initTable[int, rl.Music]()
-
-proc getSourceStreamID():int =
-    nextSourceStreamID+=1
-    result=nextSourceStreamID
-
-proc `=destroy`(sound:var Sound) =
-    if sound.sourceType==SoundType.Stream:
-        if soundStreamSources.hasKey(sound.sourceStreamID) :
-            soundStreamSources.del(sound.sourceStreamID)
-    
-    elif sound.sourceType==SoundType.Static:
-        `=destroy`(sound.sourceStatic)
-    
+proc `=destroy`(x:SoundBase) =
+    var isStream=x.sourceType==SoundType.Stream
+    sound_end.unloadSound(x.id,isStream)
 
 # Sound
 proc newSound*(fileName:string, soundType:SoundType):Sound =
     result=Sound()
     if soundType==SoundType.Static:
-        result.sourceStatic=rl.loadSound(fileName)
+        result.id=sound_end.loadSound(fileName,false)
         result.sourceType=SoundType.Static
     elif soundType==SoundType.Stream:
-        result.sourceStreamID=getSourceStreamID()
-        soundStreamSources[result.sourceStreamID]=rl.loadMusicStream(fileName)
+        result.id=sound_end.loadSound(fileName,true)
         result.sourceType=SoundType.Stream
+
+
         
 
 proc play*(sound:var Sound) =
     if sound.sourceType==SoundType.Static:
-        rl.playSound(sound.sourceStatic)
+        sound_end.play(sound.id,false)
     elif sound.sourceType==SoundType.Stream:
-        rl.playMusicStream(soundStreamSources[sound.sourceStreamID] )
+        sound_end.play(sound.id,true)
 
 proc stop*(sound:var Sound) =
     if sound.sourceType==SoundType.Static:
-        rl.stopSound(sound.sourceStatic)
+        sound_end.stop(sound.id,false)
     elif sound.sourceType==SoundType.Stream:
-        rl.stopMusicStream(soundStreamSources[sound.sourceStreamID])
+        sound_end.stop(sound.id,false)
 
 proc pause*(sound:var Sound) =
     if sound.sourceType==SoundType.Static:
-        rl.pauseSound(sound.sourceStatic)
+        sound_end.pause(sound.id,false)
     elif sound.sourceType==SoundType.Stream:
-        rl.pauseMusicStream(soundStreamSources[sound.sourceStreamID])
+        sound_end.pause(sound.id,true)
 
 proc resume*(sound:var Sound) =
     if sound.sourceType==SoundType.Static:
-        rl.resumeSound(sound.sourceStatic)
+        sound_end.resume(sound.id,false)
     elif sound.sourceType==SoundType.Stream:
-        rl.resumeMusicStream(soundStreamSources[sound.sourceStreamID])
+        sound_end.resume(sound.id,true)
 
 proc isPlaying*(sound:var Sound):bool =
     if sound.sourceType==SoundType.Static:
-        result=rl.isSoundPlaying(sound.sourceStatic)
+        result=sound_end.isPlaying(sound.id,false)
     elif sound.sourceType==SoundType.Stream:
-        result=rl.isMusicStreamPlaying(soundStreamSources[sound.sourceStreamID])
-
-proc isValid*(sound:var Sound):bool =
-    if sound.sourceType==SoundType.Static:
-        result=rl.isSoundValid(sound.sourceStatic)
-    elif sound.sourceType==SoundType.Stream:
-        result=rl.isMusicValid(soundStreamSources[sound.sourceStreamID])
+        result=sound_end.isPlaying(sound.id,true)
     
 
 proc setVolume*(sound:var Sound, volume:float) =
     if sound.sourceType==SoundType.Static:
-        rl.setSoundVolume(sound.sourceStatic, volume)
+        sound_end.setVolume(sound.id,false, volume)
     elif sound.sourceType==SoundType.Stream:
-        rl.setMusicVolume(soundStreamSources[sound.sourceStreamID], volume)
+        sound_end.setVolume(sound.id,true, volume)
 
 proc setPitch*(sound:var Sound, pitch:float) =
     if sound.sourceType==SoundType.Static:
-        rl.setSoundPitch(sound.sourceStatic, pitch)
+        sound_end.setPitch(sound.id,false, pitch)
     elif sound.sourceType==SoundType.Stream:
-        rl.setMusicPitch(soundStreamSources[sound.sourceStreamID], pitch)
+        sound_end.setPitch(sound.id,true, pitch)
 
 proc setPan*(sound:var Sound, pan:float) =
     if sound.sourceType==SoundType.Static:
-        rl.setSoundPan(sound.sourceStatic, pan)
+        sound_end.setPan(sound.id,false, pan)
     elif sound.sourceType==SoundType.Stream:
-        rl.setMusicPan(soundStreamSources[sound.sourceStreamID], pan)
+        sound_end.setPan(sound.id,true, pan)
 
 
 

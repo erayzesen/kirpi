@@ -3,21 +3,19 @@
 #   License information: https://github.com/erayzesen/kirpi/blob/master/LICENSE
 
 type
-  Vec2* = object
-    x*, y*: float64
 
   Triangle* = object
-    a*, b*, c*: Vec2
+    a*, b*, c*: tuple[x,y:float]
 
 # ---------------- Vector operations ----------------
-proc `-`(a,b:Vec2): Vec2 = Vec2(x:a.x-b.x, y:a.y-b.y)
-proc cross(a,b:Vec2): float64 = a.x*b.y - a.y*b.x
+proc `-`(a,b:tuple[x,y:float]): tuple[x,y:float] = (x:a.x-b.x, y:a.y-b.y)
+proc cross(a,b:tuple[x,y:float]): float64 = a.x*b.y - a.y*b.x
 
 # ---------------- Reflex / ear tests ----------------
-proc isReflex(prev,curr,next:Vec2): bool =
+proc isReflex(prev,curr,next:tuple[x,y:float]): bool =
   cross(curr - prev, next - curr) < 0.0
 
-proc pointInTriangle(p,a,b,c:Vec2): bool =
+proc pointInTriangle(p,a,b,c:tuple[x,y:float]): bool =
   # half-space method
   let ab = b - a
   let bc = c - b
@@ -31,10 +29,10 @@ proc pointInTriangle(p,a,b,c:Vec2): bool =
   (c1 >= 0 and c2 >= 0 and c3 >= 0) or (c1 <= 0 and c2 <= 0 and c3 <= 0)
 
 # ---------------- Triangulation ----------------
-proc triangulate*(poly: seq[Vec2]): seq[Triangle] =
+proc triangulate*(poly: seq[tuple[x,y:float]]): seq[ tuple[x,y:float] ] =
   let n = poly.len
   if n < 3: return @[]
-  if n == 3: return @[Triangle(a:poly[0],b:poly[1],c:poly[2])]
+  if n == 3: return @[ (x:poly[0].x, y: poly[0].y), (x:poly[1].x, y: poly[1].y) ,(x:poly[2].x, y:poly[2].y) ]
 
   var idx = newSeq[int](n)
   for i in 0..<n: idx[i] = i
@@ -48,7 +46,7 @@ proc triangulate*(poly: seq[Vec2]): seq[Triangle] =
 
   for i in 0..<idx.len: updateReflex(i)
 
-  var res: seq[Triangle] = @[]
+  var res: seq[ tuple[x,y:float]] = @[]
   res.setLen(0)
   var iterations = 0
   let maxIter = n*5
@@ -78,7 +76,11 @@ proc triangulate*(poly: seq[Vec2]): seq[Triangle] =
           break
       if bad: continue
 
-      res.add Triangle(a:A,b:B,c:C)
+      
+      res.add((x:A.x,y:A.y) )
+      res.add( (x:B.x,y:B.y) )
+      res.add( (x:C.x,y:C.y) )
+      
       idx.delete(i)
 
       # update reflex for neighbors
@@ -94,10 +96,18 @@ proc triangulate*(poly: seq[Vec2]): seq[Triangle] =
       let a = idx[0]
       let b = idx[1]
       let c = idx[2]
-      res.add Triangle(a:poly[a],b:poly[b],c:poly[c])
+
+      res.add( (x:poly[a].x,y:poly[a].y) )
+      res.add( (x:poly[b].x,y:poly[b].y) )
+      res.add( (x:poly[c].x,y:poly[c].y) )
+      
+      
       idx.delete(1)
 
   if idx.len == 3:
-    res.add Triangle(a:poly[idx[0]],b:poly[idx[1]],c:poly[idx[2]])
+    res.add( (x:poly[idx[0]].x, y:poly[idx[0]].y) )
+    res.add( (x:poly[idx[1]].x, y:poly[idx[1]].y) )
+    res.add( (x:poly[idx[2]].x, y:poly[idx[2]].y) )
+    
 
   return res

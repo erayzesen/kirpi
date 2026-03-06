@@ -8,6 +8,9 @@ import rsc
 import hashes
 import javascript
 
+#backends
+import backends/naylib/graphics_end
+
 
 #Emscripten /Web Main Loop Fix Wrapper (We don't want to use Asyncify on the web targets)
 #https://github.com/raysan5/raylib/wiki/Working-for-Web-(HTML5)#41-avoid-raylib-whilewindowshouldclose-loop
@@ -67,7 +70,6 @@ proc `=destroy`(app:var AppWindow) =
   assert isWindowReady(), "Window is already closed!"
   echo "appWindow"
   #resources clear
-  fonts.clear()
   
   closeAudioDevice()
   closeWindow()
@@ -120,6 +122,8 @@ proc initAppWindow(title:string,appSettings:AppSettings) =
 
   initWindow( int32(appSettings.window.width), int32(appSettings.window.height), title)
 
+  
+
   window.setMinSize(appSettings.window.minWidth,appSettings.window.minHeight)
 
   if appSettings.window.fullscreen :
@@ -145,6 +149,9 @@ proc initAppWindow(title:string,appSettings:AppSettings) =
     setWindowIcon(defaultIconIMG)
 
   initAudioDevice()
+
+  #Init Backends
+  graphics_end.init()
 
   setExitKey(KeyboardKey.Null)
   
@@ -183,13 +190,9 @@ proc run*(title:string,load: proc(), update: proc(dt:float), draw: proc(), confi
   initAppWindow(title,kirpiApp.settings)
 
   #Loading default font from data
-  var defaultFontID:Hash=("kirpi_default_font").hash()
+  var defaultFontID=graphics_end.loadFontWithData("kirpi_default_font",".ttf",rsc.defaultFontData,kirpiApp.settings.antialias,36)
   graphics.defaultFont=graphics.Font( id:defaultFontID)
   setFont(graphics.defaultFont)
-  fonts[defaultFontID]=loadFontFromMemory(".ttf",rsc.defaultFontData,36,0 )
-  if kirpiApp.settings.antialias==true :
-    setTextureFilter(fonts[defaultFontID].texture,TextureFilter.Bilinear)
-
 
   setColor(White)
 
