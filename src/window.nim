@@ -2,58 +2,41 @@
 #   Github: https://github.com/erayzesen/kirpi
 #   License information: https://github.com/erayzesen/kirpi/blob/master/LICENSE
 
-import raylib as rl
+import backends/naylib/window_end
 
 # Saving Monitor Resolution to fullscreen operations
 
-var mWidthBeforeFullScreen:int32
-var mHeightBeforeFullScreen:int32
-
-var wWidthBeforeFullScreen:int32
-var wHeightBeforeFullScreen:int32
-
 proc setFullScreenMode*(value:bool) =
-    if value==true and isWindowFullscreen()==false :
-        wWidthBeforeFullScreen=getScreenWidth()
-        wHeightBeforeFullScreen=getScreenHeight()
-        mWidthBeforeFullScreen=getMonitorWidth(getCurrentMonitor() )
-        mHeightBeforeFullScreen=getMonitorHeight(getCurrentMonitor() )
-        setWindowSize(mWidthBeforeFullScreen,mHeightBeforeFullScreen)
-        toggleFullscreen()
-    elif value==false and isWindowFullscreen()==true :
-        toggleFullscreen()
-        setWindowSize(wWidthBeforeFullScreen,wHeightBeforeFullScreen)
+    window_end.setFullScreenMode(value)
+
 
 proc getFullScreenMode*() :bool =
-    result=isWindowFullscreen()
+    result=window_end.getFullScreenMode()
 
 proc setBorderlessMode*(value: bool ) =
-    if value==true and isWindowState(BorderlessWindowedMode)==false :
-        toggleBorderlessWindowed()
-    elif value==false and isWindowState(BorderlessWindowedMode)==true :
-        toggleBorderlessWindowed()
+    window_end.setBorderlessMode(value)
 
 proc getBorderlessMode*() :bool =
-    result= isWindowState(BorderlessWindowedMode)
+    result= window_end.getBorderlessMode()
 
 
 proc setMinSize*(width:int=1,height:int=1)  =
-    rl.setWindowMinSize( int32(width),int32(height) )
+    window_end.setMinSize(width,height )
 
 proc setFocused*() =
-    setWindowFocused()
+    window_end.setFocused()
 
 proc isFocused*() :bool =
-    result=rl.isWindowFocused()
+    result=window_end.isFocused()
 
 proc isResized*() : bool =
-    result=rl.isWindowResized()
+    result=window_end.isResized()
 
 proc setTitle*(title:string) =
-    setWindowTitle(title)
+    window_end.setTitle(title)
 
 proc getWidth*() : int =
-    result=getRenderWidth()
+    result=window_end.getWidth()
 
 proc getHeight*() : int =
-    result=getRenderHeight()
+    result=window_end.getHeight()

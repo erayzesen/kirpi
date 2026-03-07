@@ -7,7 +7,7 @@ import tables,os,hashes
 import raylib as rl
 import rlgl as rlgl
 import std/unicode
-
+import settings_end
 #region Backend Needs
 
 ### Resource Managment ###
@@ -28,7 +28,7 @@ var textures*: Table[Hash, TextureEntry] = initTable[Hash, TextureEntry]()
 var shaders*: Table[Hash, ShaderEntry] = initTable[Hash, ShaderEntry]()
 
 #Initialization
-proc init*()
+proc init*(appBackendSettings:Settings)
 proc deInit*()
 #Fonts
 proc loadFontFile*(filename:string, antialias:bool=true, rasterSize:int=32): Hash 
@@ -76,7 +76,7 @@ proc clearCanvas*(color:tuple[r,g,b,a:uint8])
 
 #region Initialization
 var shapeTexture:Texture2D #We're using custom shape texture because there're some issues about the shape texture id of raylib 
-proc init*() =
+proc init*(appBackendSettings:Settings) =
     let whiteImage = genImageColor(1, 1, WHITE) # 1x1 beyaz resim üret
     shapeTexture = loadTextureFromImage(whiteImage)
 
@@ -86,7 +86,7 @@ proc deInit*() =
 #endregion
     
 
-#region Load Resources
+#region Methods & Properties
 proc loadFontFile*(filename:string, antialias:bool=true, rasterSize:int=32): Hash =
   var normalizedPath=filename.normalizedPath()
   var hashID:Hash=normalizedPath.hash()
@@ -291,7 +291,7 @@ proc setShaderTextureValue*(shaderID:Hash, uniformName:string, textureID:Hash) =
 proc renderGeometry*(vertices:seq[tuple[x,y,uvx,uvy:float]],indices:seq[int],color:tuple[r,g,b,a:uint8],textureDataID:int=0) =
     
     if textureDataID == 0 :
-        setTexture(getShapesTexture().id)
+        setTexture(shapeTexture.id)
     else :
         setTexture(textureDataID.uint32)
         
@@ -323,10 +323,11 @@ proc renderGeometry*(vertices:seq[tuple[x,y,uvx,uvy:float]],indices:seq[int],col
 
 proc renderGeometry*(trianglePoints:seq[tuple[x,y,uvx,uvy:float]],color:tuple[r,g,b,a:uint8],textureDataID:int=0) =
 
-    if textureDataID != 0 :
-        setTexture(textureDataID.uint32)
-    else :
+    if textureDataID == 0 :
         setTexture(shapeTexture.id)
+    else :
+        setTexture(textureDataID.uint32)
+        
         #setTexture(getShapesTexture().id)
         
 

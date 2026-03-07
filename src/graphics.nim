@@ -7,7 +7,7 @@ import std/strutils
 import algorithm
 import std/unicode
 
-import tables,os,hashes,options
+import hashes,options
 
 import math
 import triangulator

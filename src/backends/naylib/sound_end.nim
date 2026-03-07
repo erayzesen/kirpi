@@ -5,6 +5,7 @@
 
 import tables,hashes,os
 import raylib as rl
+import settings_end
 
 
 #region Backend Needs
@@ -21,7 +22,7 @@ var sounds*: Table[Hash, SoundEntry] = initTable[Hash, SoundEntry]()
 var soundStreams*: Table[Hash, SoundStreamEntry] = initTable[Hash, SoundStreamEntry]()
 
 #Initialization
-proc init*()
+proc init*(appBackendSettings:Settings)
 proc deInit*()
 
 #Load&Unload Sources
@@ -43,7 +44,8 @@ proc setPitch*(soundID:Hash, isStream:bool,value:float)
 
 
 #region Initialization
-proc init*() =
+proc init*(appBackendSettings:Settings) =
+    initAudioDevice()
     discard
 
 proc deInit*() =
