@@ -13,6 +13,7 @@ type
         load: proc() 
         draw: proc()  
         update: proc(dt:float) 
+        backendLoop:proc()
 
     AppWindow* = object #A Wrapper solution for raylib issues about closing window time
 
@@ -22,7 +23,7 @@ var appWindow:AppWindow
 
 proc init*(appBackendSettings:Settings)
 proc deinit*()
-proc runApp*(load: proc(), update: proc(dt:float), draw: proc())
+proc runApp*(load: proc(), update: proc(dt:float), draw: proc(),backendLoop:proc())
 proc getFPS*():int
 proc getFrameMiliSeconds*():float
 proc getTime*() : float 
@@ -48,10 +49,8 @@ when defined(emscripten):
 
 proc `=destroy`(app:var AppWindow) =
   assert isWindowReady(), "Window is already closed!"
-  echo "Closing Audio Device... "
   
-  
-  closeAudioDevice()
+
   closeWindow()
 
 
@@ -72,13 +71,14 @@ var frameMS:float=0.0
 
 
 proc getFPS*():int =
-    discard
+    result=fps
+    
 
 proc getFrameMiliSeconds*():float =
-    discard
+    result=frameMS
 
 proc getTime*() : float =
-    discard
+    result=rl.getTime()
 
 proc initAppWindow()=
     assert not isWindowReady(), "Window is already opened"
@@ -114,9 +114,9 @@ proc initAppWindow()=
     
 
 proc appLoop(arg: pointer) {.cdecl.} =
-      #Update Sound Streams
-    #[ for id in soundStreamSources.keys:
-        rl.updateMusicStream(soundStreamSources[id]) ]#
+    
+    #Apply Backend Loops 
+    app.backendLoop()
     
     app.update(getFrameTime() ) # update 
 
@@ -128,7 +128,7 @@ proc appLoop(arg: pointer) {.cdecl.} =
     
     let dt = 1.0 / 60.0
     fpsTimer += dt
-    fps=getFPS()
+    fps=rl.getFPS()
     if fpsTimer >= 1.0:
         frameMS=getFrameTime() * 1000.0
         if enablePrintFrametime :
@@ -137,10 +137,12 @@ proc appLoop(arg: pointer) {.cdecl.} =
             echo "FPS: " & $fps
         fpsTimer = 0.0
 
-proc runApp*(load: proc(), update: proc(dt:float), draw: proc()) =
+
+proc runApp*(load: proc(), update: proc(dt:float), draw: proc(),backendLoop:proc()) =
     app.load = load
     app.update = update
     app.draw = draw
+    app.backendLoop=backendLoop
 
 
     app.load() # load 

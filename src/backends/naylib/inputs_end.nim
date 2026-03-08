@@ -15,6 +15,7 @@ import settings_end
 
 #Initialization
 proc init*(appBackendSettings:Settings)
+proc loop*()
 proc deInit*()
 
 #Keys
@@ -240,10 +241,13 @@ for k, v in kirpiGamepadButtonMap.pairs:
 #region Methods & Properties
 
 proc init(appBackendSettings:Settings) =
-  discard
+    discard
+
+proc loop*() =
+    discard
 
 proc deinit() =
-  discard
+    discard
 
 
 

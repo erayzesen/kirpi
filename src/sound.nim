@@ -47,7 +47,7 @@ proc stop*(sound:var Sound) =
     if sound.sourceType==SoundType.Static:
         sound_end.stop(sound.id,false)
     elif sound.sourceType==SoundType.Stream:
-        sound_end.stop(sound.id,false)
+        sound_end.stop(sound.id,true)
 
 proc pause*(sound:var Sound) =
     if sound.sourceType==SoundType.Static:

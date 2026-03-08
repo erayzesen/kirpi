@@ -23,6 +23,7 @@ var soundStreams*: Table[Hash, SoundStreamEntry] = initTable[Hash, SoundStreamEn
 
 #Initialization
 proc init*(appBackendSettings:Settings)
+proc loop*()
 proc deInit*()
 
 #Load&Unload Sources
@@ -48,7 +49,14 @@ proc init*(appBackendSettings:Settings) =
     initAudioDevice()
     discard
 
+proc loop*() =
+    for id in soundStreams.keys:
+        rl.updateMusicStream(soundStreams[id].data)
+    
+
 proc deInit*() =
+    echo "Closing Audio Device... "
+    closeAudioDevice()
     discard
 
 #endregion

@@ -42,10 +42,10 @@ proc load() =
 
 proc update( dt:float) =
   # Adjust fish count
-  if isKeyPressed(KeyboardKey.Space) :
+  if isKeyPressed(Key.Space) :
     fishCount+=1000
     reCreateFishes(fishCount) # Rebuild batch with new count
-  if isKeyPressed(KeyboardKey.Backspace) :
+  if isKeyPressed(Key.Backspace) :
     fishCount=max(0,fishCount-1000) 
     reCreateFishes(fishCount) # Rebuild batch with new count
 

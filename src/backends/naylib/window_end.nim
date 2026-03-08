@@ -7,6 +7,7 @@ import settings_end
 
 #region Backend Needs
 proc init*(appBackendSettings:Settings)
+proc loop*()
 proc deinit*()
 proc setFullScreenMode*(value:bool)
 proc getFullScreenMode*() :bool
@@ -27,6 +28,10 @@ proc getHeight*() : int
 
 proc init*(appBackendSettings:Settings) =
     discard
+
+proc loop*() =
+    discard
+
 proc deinit*() =
     discard
 

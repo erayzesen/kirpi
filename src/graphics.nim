@@ -1217,7 +1217,8 @@ proc draw * ( spriteBatch:SpriteBatch, x:float=0,y:float=0) =
 
     pop()
 
-  graphics_end.renderGeometry(trianglePoints,globalDrawState.drawerColor,spriteBatch.textureID)
+  var textureRawID=graphics_end.getTextureDataID(spriteBatch.textureID)
+  graphics_end.renderGeometry(trianglePoints,globalDrawState.drawerColor,textureRawID)
     
   
 
@@ -1302,10 +1303,10 @@ proc draw*( text:Text ,x:float=0.0,y:float=0.0, size:float=16, spacing:float=1.0
   let fontTextureRawID=graphics_end.getFontTextureDataID(text.font.id)
   graphics_end.renderGeometry(trianglePoints,globalDrawState.drawerColor,fontTextureRawID)
   
-proc triangles*( vertices:seq[tuple[x,y,uvx,uvy:float]],indices:seq[int],color:tuple[r,g,b,a:uint8],textureID:int=0 ) =
+proc triangles*( vertices:var seq[tuple[x,y,uvx,uvy:float]],indices:var seq[int],color:tuple[r,g,b,a:uint8],textureID:int=0 ) =
   graphics_end.render_geometry(vertices,indices,color,textureID)
 
-proc triangles*( trianglePoints:seq[tuple[x,y,uvx,uvy:float]],color:tuple[r,g,b,a:uint8],textureID:int=0 ) =
+proc triangles*( trianglePoints:var seq[tuple[x,y,uvx,uvy:float]],color:tuple[r,g,b,a:uint8],textureID:int=0 ) =
   graphics_end.render_geometry(trianglePoints,color,textureID)
 
 ### End of Drawing Operations

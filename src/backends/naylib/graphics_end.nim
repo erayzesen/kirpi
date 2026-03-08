@@ -29,6 +29,7 @@ var shaders*: Table[Hash, ShaderEntry] = initTable[Hash, ShaderEntry]()
 
 #Initialization
 proc init*(appBackendSettings:Settings)
+proc loop*()
 proc deInit*()
 #Fonts
 proc loadFontFile*(filename:string, antialias:bool=true, rasterSize:int=32): Hash 
@@ -67,8 +68,8 @@ proc setShaderUniform*(shaderID:Hash, uniformName:string, value:(int,int,int,int
 proc setShaderTextureValue*(shaderID:Hash, uniformName:string, textureID:Hash) 
 
 #Rendering
-proc renderGeometry*(vertices:seq[tuple[x,y,uvx,uvy:float]],indices:seq[int],color:tuple[r,g,b,a:uint8],textureDataID:int=0)
-proc renderGeometry*(trianglePoints:seq[tuple[x,y,uvx,uvy:float]],color:tuple[r,g,b,a:uint8],textureDataID:int=0)
+proc renderGeometry*(vertices:var seq[tuple[x,y,uvx,uvy:float]],indices:var seq[int],color:tuple[r,g,b,a:uint8],textureDataID:int=0)
+proc renderGeometry*(trianglePoints:var seq[tuple[x,y,uvx,uvy:float]],color:tuple[r,g,b,a:uint8],textureDataID:int=0)
 
 proc clearCanvas*(color:tuple[r,g,b,a:uint8]) 
     
@@ -79,6 +80,9 @@ var shapeTexture:Texture2D #We're using custom shape texture because there're so
 proc init*(appBackendSettings:Settings) =
     let whiteImage = genImageColor(1, 1, WHITE) # 1x1 beyaz resim üret
     shapeTexture = loadTextureFromImage(whiteImage)
+
+proc loop*() =
+    discard
 
 proc deInit*() =
     discard
@@ -288,7 +292,7 @@ proc setShaderTextureValue*(shaderID:Hash, uniformName:string, textureID:Hash) =
 #region Rendering
 
 
-proc renderGeometry*(vertices:seq[tuple[x,y,uvx,uvy:float]],indices:seq[int],color:tuple[r,g,b,a:uint8],textureDataID:int=0) =
+proc renderGeometry*(vertices:var seq[tuple[x,y,uvx,uvy:float]],indices:var seq[int],color:tuple[r,g,b,a:uint8],textureDataID:int=0) =
     
     if textureDataID == 0 :
         setTexture(shapeTexture.id)
@@ -321,7 +325,7 @@ proc renderGeometry*(vertices:seq[tuple[x,y,uvx,uvy:float]],indices:seq[int],col
     discard
 
 
-proc renderGeometry*(trianglePoints:seq[tuple[x,y,uvx,uvy:float]],color:tuple[r,g,b,a:uint8],textureDataID:int=0) =
+proc renderGeometry*(trianglePoints:var seq[tuple[x,y,uvx,uvy:float]],color:tuple[r,g,b,a:uint8],textureDataID:int=0) =
 
     if textureDataID == 0 :
         setTexture(shapeTexture.id)

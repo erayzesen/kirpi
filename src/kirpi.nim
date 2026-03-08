@@ -53,6 +53,13 @@ proc getFrameMiliSeconds*():float =
 proc getTime*() : float =
   result=app_end.getTime()
 
+proc backendLoop() =
+
+  graphics_end.loop()
+  inputs_end.loop()
+  sound_end.loop()
+  window_end.loop()
+
 
 
 proc run*(title:string,load: proc(), update: proc(dt:float), draw: proc(), config : proc (settings : var AppSettings)=nil) =
@@ -104,7 +111,7 @@ proc run*(title:string,load: proc(), update: proc(dt:float), draw: proc(), confi
   if kirpiAppSettings.defaultTextureFilter==TextureFilterSettings.Nearest :
     graphics.defaultFilter=TextureFilters.Nearest
 
-  app_end.runApp(load, update, draw)
+  app_end.runApp(load, update, draw,backendLoop)
 
 
   app_end.deinit()
@@ -118,7 +125,4 @@ proc run*(title:string,load: proc(), update: proc(dt:float), draw: proc(), confi
 
 
 
-export graphics 
-export inputs, window
-export sound 
-export javascript
+export graphics,inputs, window,sound ,javascript
