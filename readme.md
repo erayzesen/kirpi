@@ -103,7 +103,7 @@ Kirpi doesn’t have fancy tutorials yet. But honestly, the entire API is basica
 load()     # to do one-time setup of your game
 update(dt:float)   # which is used to manage your game's state frame-to-frame
 draw()     #  which is used to render the game state onto the screen
-config(settings:AppSettings) = # which is used to config the game app
+config(settings:var AppSettings) = # which is used to config the game app
     #all properties with default values.
 
     settings.fps=60
@@ -150,7 +150,7 @@ replaceTransform(t: Transform)    #replaces the current coordinate transformatio
 #Object Creation
 newTexture(filename:string):Texture    #creates a new Texture.
 newFont(filename:string, antialias:bool=true, rasterSize:int=32):Font #creates a new Font
-newShader(vertexShaderFile: string, fragmentShaderFile: string) #creates a new shader. If you don't want to use a vertex shader, set the vertexShaderFile argument to an empty string("")
+newShader(shaderFolderPath:string,shaderName:string) #Creates a new shader. It does this by locating and loading the shader files with the given name in the specified folder path.
 newText(text:string, font:ptr rl.Font):Text    #creates a new drawable Text object.
 newQuad(x,y,width,height,sw,sh:int):Quad  #creates a new Quad.
 newQuad(x,y,width,height:int, texture:var Texture):Quad   #creates a new Quad (it just uses the texture to get width&height properties).
@@ -186,7 +186,7 @@ quad(mode:DrawModes,x1:float,y1:float,x2:float,y2:float,x3:float,y3:float,x4:flo
 pixel(x:float,y:float)  #Draws a pixel.
 draw(texture:Texture, x:float=0.0,y:float=0.0)  #draws a texture
 draw(texture:Texture, quad:Quad, x:float=0.0,y:float=0.0)   #draws a texture with the specified quad 
-draw(spriteBatch:SpriteBatch, x:float=0,y:float=0)  #draws a spritebatch
+draw(spriteBatch:var SpriteBatch, x:float=0,y:float=0)  #draws a spritebatch
 draw(text:Text ,x:float=0.0,y:float=0.0, size:float=16, spacing:float=1.0 )     #draws a text
 clear()     #clears the screen with the active color.
 clear(color:Color)     #clears the screen with the specified color.

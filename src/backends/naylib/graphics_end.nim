@@ -332,8 +332,6 @@ proc renderGeometry*(trianglePoints:var seq[tuple[x,y,uvx,uvy:float]],color:tupl
     else :
         setTexture(textureDataID.uint32)
         
-        #setTexture(getShapesTexture().id)
-        
 
     rlBegin(Quads)
     color4ub(color.r.uint8, color.g.uint8, color.b.uint8, color.a.uint8)

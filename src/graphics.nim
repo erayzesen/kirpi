@@ -243,6 +243,7 @@ type
     data:seq[ (Quad,Transform) ]=newSeq[ (Quad,Transform) ]()
     defWidth:int=1
     defHeight:int=1
+    buffer:seq[tuple[x,y,uvx,uvy:float]]= @[]
 
   ShaderBase = object 
     id:Hash
@@ -1155,11 +1156,11 @@ proc draw*( texture:Texture,x:float=0.0,y:float=0.0) =
   var quad=newQuad(0,0,texture.width.int,texture.height.int,texture.width.int,texture.height.int)
   draw(texture,quad,x,y)
 
-proc draw * ( spriteBatch:SpriteBatch, x:float=0,y:float=0) =
+proc draw * ( spriteBatch:var SpriteBatch, x:float=0,y:float=0) =
 
   
 
-  var trianglePoints : seq[tuple[x,y,uvx,uvy:float] ] = @[]
+  setLen(spriteBatch.buffer,0)
 
   for (q,t) in spriteBatch.data :
     push()
@@ -1193,32 +1194,32 @@ proc draw * ( spriteBatch:SpriteBatch, x:float=0,y:float=0) =
     if isTransformMirrored==false :
 
       # Triangle 1: v3, v2, v1
-      trianglePoints.add( (x:v3x,y:v3y,uvx:tcx2,uvy:tcy2) )
-      trianglePoints.add( (x:v2x,y:v2y,uvx:tcx2,uvy:tcy1) )
-      trianglePoints.add( (x:v1x,y:v1y,uvx:tcx1,uvy:tcy1) )
+      spriteBatch.buffer.add( (x:v3x,y:v3y,uvx:tcx2,uvy:tcy2) )
+      spriteBatch.buffer.add( (x:v2x,y:v2y,uvx:tcx2,uvy:tcy1) )
+      spriteBatch.buffer.add( (x:v1x,y:v1y,uvx:tcx1,uvy:tcy1) )
 
       # Triangle 2: v1, v3, v4
-      trianglePoints.add( (x:v4x,y:v4y,uvx:tcx1,uvy:tcy2) )
-      trianglePoints.add( (x:v3x,y:v3y,uvx:tcx2,uvy:tcy2) )
-      trianglePoints.add( (x:v1x,y:v1y,uvx:tcx1,uvy:tcy1) )
+      spriteBatch.buffer.add( (x:v4x,y:v4y,uvx:tcx1,uvy:tcy2) )
+      spriteBatch.buffer.add( (x:v3x,y:v3y,uvx:tcx2,uvy:tcy2) )
+      spriteBatch.buffer.add( (x:v1x,y:v1y,uvx:tcx1,uvy:tcy1) )
 
     else :
       # Negative scale values exception  (inverse faces)
 
       # Triangle 1: v1, v2, v3
-      trianglePoints.add( (x:v1x,y:v1y,uvx:tcx1,uvy:tcy1) )
-      trianglePoints.add( (x:v2x,y:v2y,uvx:tcx2,uvy:tcy1) )
-      trianglePoints.add( (x:v3x,y:v3y,uvx:tcx2,uvy:tcy2) )
+      spriteBatch.buffer.add( (x:v1x,y:v1y,uvx:tcx1,uvy:tcy1) )
+      spriteBatch.buffer.add( (x:v2x,y:v2y,uvx:tcx2,uvy:tcy1) )
+      spriteBatch.buffer.add( (x:v3x,y:v3y,uvx:tcx2,uvy:tcy2) )
 
       # Triangle 2: v1, v3, v4
-      trianglePoints.add( (x:v1x,y:v1y,uvx:tcx1,uvy:tcy1) )
-      trianglePoints.add( (x:v3x,y:v3y,uvx:tcx2,uvy:tcy2) )
-      trianglePoints.add( (x:v4x,y:v4y,uvx:tcx1,uvy:tcy2) )
+      spriteBatch.buffer.add( (x:v1x,y:v1y,uvx:tcx1,uvy:tcy1) )
+      spriteBatch.buffer.add( (x:v3x,y:v3y,uvx:tcx2,uvy:tcy2) )
+      spriteBatch.buffer.add( (x:v4x,y:v4y,uvx:tcx1,uvy:tcy2) )
 
     pop()
 
   var textureRawID=graphics_end.getTextureDataID(spriteBatch.textureID)
-  graphics_end.renderGeometry(trianglePoints,globalDrawState.drawerColor,textureRawID)
+  graphics_end.renderGeometry(spriteBatch.buffer,globalDrawState.drawerColor,textureRawID)
     
   
 
