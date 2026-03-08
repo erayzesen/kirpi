@@ -1,6 +1,7 @@
 import ../src/kirpi
 import math
 
+
 proc load() =
     discard
 
@@ -10,8 +11,6 @@ proc update( dt:float) =
 proc draw() =
     clear(Black)
     origin()
-    translate(-window.getWidth().float*0.5,-window.getHeight().float*0.5)
-    translate(window.getWidth().float*0.5,window.getHeight().float*0.5)
     
     setColor(Magenta)
     #Circles

@@ -2,28 +2,18 @@
 #   Github: https://github.com/erayzesen/kirpi
 #   License information: https://github.com/erayzesen/kirpi/blob/master/LICENSE
 
-import tables
-import raylib as rl
 import rsc
-import hashes
-import javascript
+
+import graphics, inputs, sound, window, javascript
+#backends
+import backends/naylib/settings_end
+import backends/naylib/app_end
+import backends/naylib/graphics_end
+import backends/naylib/sound_end
+import backends/naylib/inputs_end
+import backends/naylib/window_end
 
 
-#Emscripten /Web Main Loop Fix Wrapper (We don't want to use Asyncify on the web targets)
-#https://github.com/raysan5/raylib/wiki/Working-for-Web-(HTML5)#41-avoid-raylib-whilewindowshouldclose-loop
-when defined(emscripten):
-  type GameData = object
-    shouldClose: bool
-
-  var gameData: GameData
-  proc emscripten_set_main_loop_arg(
-    f: proc(arg: pointer) {.cdecl.},
-    arg: pointer,
-    fps: cint,
-    simulateInfiniteLoop: cint
-  ) {.importc, cdecl, header: "<emscripten/emscripten.h>".}
-
-import graphics, inputs, sound, window
 
 type
   WindowSettings* = object
@@ -50,161 +40,89 @@ type
     defaultTextureFilter*:TextureFilterSettings=TextureFilterSettings.Linear
     antialias*:bool=true
     
-  App* = object
-    settings:AppSettings
-    load: proc() 
-    draw: proc()  
-    update: proc(dt:float) 
-    
-  AppWindow* = object #A Wrapper solution for raylib issues about closing window time
   
 
-var kirpiApp*:App=App()
-var appWindow:AppWindow
-
-
-proc `=destroy`(app:var AppWindow) =
-  assert isWindowReady(), "Window is already closed!"
-  echo "appWindow"
-  #resources clear
-  fonts.clear()
-  
-  closeAudioDevice()
-  closeWindow()
-
-
-proc `=sink`(x: var AppWindow; y: AppWindow) {.error.}
-proc `=dup`(y: AppWindow): AppWindow {.error.}
-proc `=copy`(x: var AppWindow; y: AppWindow) {.error.}
-proc `=wasMoved`(x: var AppWindow) {.error.}
-
-#Frame Time Properties
-var fpsTimer = 0.0
-var enablePrintFPS:bool=false
-var enablePrintFrameTime:bool=false
-var fps:int=0
-var frameMS:float=0.0
 
 
 proc getFramesPerSecond*():int =
-  result=fps
+  result=app_end.getFPS()
 
 proc getFrameMiliSeconds*():float =
-  result=frameMS
+  result=app_end.getFrameMiliSeconds()
 
 proc getTime*() : float =
-  result=rl.getTime()
+  result=app_end.getTime()
 
+proc backendLoop() =
 
-#Window
+  graphics_end.loop()
+  inputs_end.loop()
+  sound_end.loop()
+  window_end.loop()
 
-proc initAppWindow(title:string,appSettings:AppSettings) =
-  assert not isWindowReady(), "Window is already opened"
-  
-  var flg:uint32=0
-  if appSettings.window.resizeable :
-    flg=flg or uint32(WindowResizable)
-
-  if appSettings.window.borderless :
-    flg=flg or uint32(BorderlessWindowedMode)
-    
-  if appSettings.window.alwaysOnTop :
-    flg=flg or uint32(WindowTopmost)
-
-  if appSettings.antialias==true :
-    flg=flg or uint32(Msaa4xHint)
-
-
-  var allFlags:Flags[ConfigFlags]=Flags[ConfigFlags]( flg  )
-  setConfigFlags(allFlags)
-
-  initWindow( int32(appSettings.window.width), int32(appSettings.window.height), title)
-
-  window.setMinSize(appSettings.window.minWidth,appSettings.window.minHeight)
-
-  if appSettings.window.fullscreen :
-    window.setFullScreenMode(true)
-
-  setTargetFPS(int32(appSettings.fps))
-  enablePrintFrameTime=appSettings.printFrameTime
-  enablePrintFPS=appSettings.printFPS
-  
-
-  if appSettings.defaultTextureFilter==TextureFilterSettings.Nearest :
-    graphics.defaultFilter=TextureFilters.Nearest
-
-  if appSettings.window.iconPath!="" :
-    var iconIMG=loadImage(appSettings.window.iconPath)
-    if isImageValid(iconIMG) :
-      setWindowIcon(iconIMG)
-    else :
-      var defaultIconIMG=loadImageFromMemory(".png",rsc.defaultIconData)
-      setWindowIcon(defaultIconIMG)
-  else :
-    var defaultIconIMG=loadImageFromMemory(".png",rsc.defaultIconData)
-    setWindowIcon(defaultIconIMG)
-
-  initAudioDevice()
-
-  setExitKey(KeyboardKey.Null)
-  
-
-proc appLoop(arg: pointer) {.cdecl.} =
-  #Update Sound Streams
-  for id in soundStreamSources.keys:
-    rl.updateMusicStream(soundStreamSources[id])
-  
-  kirpiApp.update(getFrameTime() ) # update 
-
-  beginDrawing()
-  kirpiApp.draw() # draw
-  
-  endDrawing()
-
-  
-  let dt = 1.0 / 60.0
-  fpsTimer += dt
-  fps=getFPS()
-  if fpsTimer >= 1.0:
-    frameMS=getFrameTime() * 1000.0
-    if enablePrintFrametime :
-      echo "Frame Time: " & $frameMS & " ms"
-    if enablePrintFPS :
-      echo "FPS: " & $fps
-    fpsTimer = 0.0
 
 
 proc run*(title:string,load: proc(), update: proc(dt:float), draw: proc(), config : proc (settings : var AppSettings)=nil) =
-  kirpiApp.load = load
-  kirpiApp.update = update
-  kirpiApp.draw = draw
+
+  var kirpiAppSettings:AppSettings=AppSettings()
   if config!=nil :
-    config(kirpiApp.settings)
-  initAppWindow(title,kirpiApp.settings)
+    config(kirpiAppSettings)
 
-  #Loading default font from data
-  var defaultFontID:Hash=("kirpi_default_font").hash()
-  graphics.defaultFont=graphics.Font( id:defaultFontID)
-  setFont(graphics.defaultFont)
-  fonts[defaultFontID]=loadFontFromMemory(".ttf",rsc.defaultFontData,36,0 )
-  if kirpiApp.settings.antialias==true :
-    setTextureFilter(fonts[defaultFontID].texture,TextureFilter.Bilinear)
+  var appBackendSettings:Settings=Settings()
 
+  appBackendSettings.title=title
+  appBackendSettings.width=kirpiAppSettings.window.width
+  appBackendSettings.height=kirpiAppSettings.window.height
+  appBackendSettings.resizeable=kirpiAppSettings.window.resizeable
+  appBackendSettings.borderless=kirpiAppSettings.window.borderless
+  appBackendSettings.alwaysOnTop=kirpiAppSettings.window.alwaysOnTop
+  appBackendSettings.iconPath=kirpiAppSettings.window.iconPath
+  appBackendSettings.minWidth=kirpiAppSettings.window.minWidth
+  appBackendSettings.minHeight=kirpiAppSettings.window.minHeight
+  appBackendSettings.fullscreen=kirpiAppSettings.window.fullscreen
+  appBackendSettings.antialias=kirpiAppSettings.antialias
+  appBackendSettings.targetFPS=kirpiAppSettings.fps
+  appBackendSettings.printFrameTime=kirpiAppSettings.printFrameTime
+  appBackendSettings.printFPS=kirpiAppSettings.printFPS
 
+ 
+  app_end.init(appBackendSettings)
+  window_end.init(appBackendSettings)
+  sound_end.init(appBackendSettings)
+  graphics_end.init(appBackendSettings)
+  inputs_end.init(appBackendSettings)
+  
+
+  
   setColor(White)
 
-  kirpiApp.load() # load 
+   #Loading default font from data
+  var defaultFontID=graphics_end.loadFontWithData("kirpi_default_font",".ttf",rsc.defaultFontData,kirpiAppSettings.antialias,36)
+  graphics.defaultFont=graphics.Font( id:defaultFontID)
+  setFont(graphics.defaultFont)
 
-  when defined(emscripten):
-     emscripten_set_main_loop_arg(appLoop,addr gameData,0.cint, 1.cint)
-  else :
-    while not windowShouldClose() :
-      appLoop(nil)
+  #Init backends
+  
+  
+
+  if kirpiAppSettings.window.fullscreen==true :
+    window.setFullScreenMode(true)
+
+  if kirpiAppSettings.defaultTextureFilter==TextureFilterSettings.Nearest :
+    graphics.defaultFilter=TextureFilters.Nearest
+
+  app_end.runApp(load, update, draw,backendLoop)
+
+
+  app_end.deinit()
+  window_end.deinit()
+  graphics_end.deinit()
+  sound_end.deinit()
+  inputs_end.deinit()
+
+  
    
 
 
 
-export graphics except defaultFilter,shaders,fonts
-export inputs, window
-export sound 
-export javascript
+export graphics,inputs, window,sound ,javascript

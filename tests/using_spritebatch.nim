@@ -32,6 +32,10 @@ proc reCreateFishes(count:int) =
     fishes.add(nFish)
 
 
+proc config(settings : var AppSettings) =
+  settings.fps=60.int
+
+
 proc load() =
   # Load fish texture 
   fishTexture=newTexture("tests/resources/fish.png")
@@ -42,10 +46,10 @@ proc load() =
 
 proc update( dt:float) =
   # Adjust fish count
-  if isKeyPressed(KeyboardKey.Space) :
+  if isKeyPressed(Key.Space) :
     fishCount+=1000
     reCreateFishes(fishCount) # Rebuild batch with new count
-  if isKeyPressed(KeyboardKey.Backspace) :
+  if isKeyPressed(Key.Backspace) :
     fishCount=max(0,fishCount-1000) 
     reCreateFishes(fishCount) # Rebuild batch with new count
 
@@ -62,9 +66,9 @@ proc update( dt:float) =
   
   # Refill batch with transforms
   spriteBatch.clear()
+  let scale=0.2
   for i in 0..<fishes.len :
     let flipFactor:float = if fishes[i].flip : -1 else : 1
-    let scale=0.2
     # Add fish sprite to the batch with flip + scale applied
     let batchID=spriteBatch.add(  # It returns an ID; we capture it here just to demonstrate it.
       fishes[i].x, # x position
@@ -105,4 +109,4 @@ proc draw() =
   draw(newText("Press Backspace to remove 1000 fish.", getDefaultFont()),20,iy,24)
 
 # Run the app
-run("Using SpriteBatch",load,update,draw)
+run("Using SpriteBatch",load,update,draw,config)

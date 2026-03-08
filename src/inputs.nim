@@ -2,120 +2,116 @@
 #   Github: https://github.com/erayzesen/kirpi
 #   License information: https://github.com/erayzesen/kirpi/blob/master/LICENSE
 
-import raylib as rl
+
 import unicode
+import inputs_map
+
+import backends/naylib/inputs_end
 
 
 #KeyBoard
-proc isKeyPressed*(key:rl.KeyboardKey):bool =
-    return rl.isKeyPressed(key)
+proc isKeyPressed*(key:Key):bool =
+    return inputs_end.isKeyPressed(key)
 
-proc getKeyPressed*():KeyboardKey =
-    return rl.getKeyPressed()
+proc getKeyPressed*():Key =
+    return inputs_end.getPressedKey()
 
-proc isKeyReleased*(key:rl.KeyboardKey):bool =
-    return rl.isKeyReleased(key)
+proc isKeyReleased*(key:Key):bool =
+    return inputs_end.isKeyReleased(key)
 
-proc isKeyDown*(key:rl.KeyboardKey):bool =
-    return rl.isKeyDown(key)
+proc isKeyDown*(key:Key):bool =
+    return inputs_end.isKeyDown(key)
 
-proc isKeyUp*(key:rl.KeyboardKey):bool =
-    return rl.isKeyUp(key)
+proc isKeyUp*(key:Key):bool =
+    return inputs_end.isKeyUp(key)
 
 proc getCharPressed*():Rune =
-    result=rl.getCharPressed().Rune
+    result=inputs_end.getPressedChar()
 
 
 #Mouse 
-proc isMouseButtonPressed*(button:rl.MouseButton):bool =
-    return rl.isMouseButtonPressed(button)
+proc isMouseButtonPressed*(button:MouseButton):bool =
+    return inputs_end.isMouseButtonPressed(button)
 
-proc isMouseButtonReleased*(button:rl.MouseButton):bool =
-    return rl.isMouseButtonReleased(button)
+proc isMouseButtonReleased*(button:MouseButton):bool =
+    return inputs_end.isMouseButtonReleased(button)
 
-proc isMouseButtonDown*(button:rl.MouseButton):bool =
-    return rl.isMouseButtonDown(button)
+proc isMouseButtonDown*(button:MouseButton):bool =
+    return inputs_end.isMouseButtonDown(button)
 
-proc isMouseButtonUp*(button:rl.MouseButton):bool =
-    return rl.isMouseButtonUp(button)
+proc isMouseButtonUp*(button:MouseButton):bool =
+    return inputs_end.isMouseButtonUp(button)
 
 proc getMouseX*():float =
-    return float( rl.getMouseX() )
+    return inputs_end.getMouseX()
 
 proc getMouseY*():float =
-    return float( rl.getMouseY() )
+    return inputs_end.getMouseY()
 
 #Gamepad
 
 proc isGamepadAvailable*(gamepad:int):bool =
-    return rl.isGamepadAvailable(int32(gamepad) )
+    return inputs_end.isGamepadAvailable(gamepad )
 
 proc getGamepadName*(gamepad:int):string =
-    return rl.getGamepadName(int32(gamepad))
+    return inputs_end.getGamepadName(gamepad)
 
-proc isGamepadButtonPressed*(gamepad:int, button:rl.GamepadButton):bool =
-    return rl.isGamepadButtonPressed(int32(gamepad), button)
+proc isGamepadButtonPressed*(gamepad:int, button:GamepadButton):bool =
+    return inputs_end.isGamepadButtonPressed(gamepad, button)
 
-proc isGamepadButtonReleased*(gamepad:int, button:rl.GamepadButton):bool =
-    return rl.isGamepadButtonReleased(int32(gamepad), button)
+proc isGamepadButtonReleased*(gamepad:int, button:GamepadButton):bool =
+    return inputs_end.isGamepadButtonReleased(gamepad, button)
 
-proc isGamepadButtonDown*(gamepad:int, button:rl.GamepadButton):bool =
-    return rl.isGamepadButtonDown(int32(gamepad), button)
+proc isGamepadButtonDown*(gamepad:int, button:GamepadButton):bool =
+    return inputs_end.isGamepadButtonDown(gamepad, button)
 
-proc isGamepadButtonUp*(gamepad:int, button:rl.GamepadButton):bool =
-    return rl.isGamepadButtonUp(int32(gamepad), button)
+proc isGamepadButtonUp*(gamepad:int, button:GamepadButton):bool =
+    return inputs_end.isGamepadButtonUp(gamepad, button)
 
 proc getGamepadAxisCount*(gamepad:int):int =
-    return int(rl.getGamepadAxisCount(int32(gamepad)))
+    return inputs_end.getGamepadAxisCount(int32(gamepad))
 
-proc getGamepadAxisMovement*(gamepad:int, axis:rl.GamepadAxis):float =
-    return rl.getGamepadAxisMovement(int32(gamepad), axis)
+proc getGamepadAxisMovement*(gamepad:int, axis:GamepadAxis):float =
+    return inputs_end.getGamepadAxisMovement(int32(gamepad), axis)
 
-type GamepadError* = object of CatchableError
 proc setGamepadMappings*(mappings:string) =
-    let res=rl.setGamepadMappings(mappings)
-    if res<0 :
-        let errorMessage = "Failed to load Gamepad Mappings. Return code: " & $res
-        raise newException(GamepadError, errorMessage)
+    inputs_end.setGamepadMappings(mappings)
     
-
-
-
 proc setGamepadVibration*(gamepad:int, leftMotor:float, rightMotor:float, duration:float) =
-    rl.setGamepadVibration(int32(gamepad), float32(leftMotor), float32(rightMotor), float32(duration)) 
+    inputs_end.setGamepadVibration(gamepad, leftMotor, rightMotor, duration) 
 
 #Touch
 proc getTouchX*():float =
-    return float(rl.getTouchX() )
+    return inputs_end.getTouchX()
 
 proc getTouchY*():float =
-    return float(rl.getTouchY() )
+    return inputs_end.getTouchY() 
 
 proc getTouchPointId*(index:int):int =
-    return int(rl.getTouchPointId(int32(index)) )
+    return inputs_end.getTouchPointId(index) 
 
 proc getTouchPointCount*():int =
-    return int(rl.getTouchPointCount() )
+    return inputs_end.getTouchPointCount() 
 
 proc getTouchHoldDuration*(index:int):float =
-    return float( rl.getGestureHoldDuration() )
+    return inputs_end.getTouchHoldDuration(index) 
 
 proc getTouchDragX*(index:int):float =
-    return rl.getGestureDragVector().x
+    return inputs_end.getTouchDragX(index)
 
 proc getTouchDragY*(index:int):float =
-    return rl.getGestureDragVector().y
+    return inputs_end.getTouchDragY(index)
 
 proc getTouchDragAngle*():float =
-    return rl.getGestureDragAngle()
+    return inputs_end.getTouchDragAngle()
 
 proc getTouchPinchX*() :float =
-    return rl.getGesturePinchVector().x
+    return inputs_end.getTouchPinchX()
 
 proc getTouchPinchY*() :float =
-    return rl.getGesturePinchVector().y
+    return inputs_end.getTouchPinchY()
 
 proc getTouchPinchAngle*():float =
-    return rl.getGesturePinchAngle()
+    return inputs_end.getTouchPinchAngle()
 
-export KeyboardKey, MouseButton, GamepadButton, GamepadAxis
+export inputs_map
