@@ -48,7 +48,7 @@ proc load() =
     sampleText=newText("Hello World!",getDefaultFont())
 
 proc update(dt: float) =
-    if isKeyPressed(KeyboardKey.Escape):
+    if isKeyPressed(Key.Escape):
         quit()
 
 proc draw() =
@@ -238,15 +238,15 @@ setPan(sound:Sound)    #sets the pan of the specified sound
 
 ### INPUTS
 #Keyboard
-isKeyPressed(key:rl.KeyboardKey):bool     #checks if a key has been pressed once
+isKeyPressed(key:Key):bool     #checks if a key has been pressed once
 
-isKeyReleased(key:rl.KeyboardKey):bool        #checks if a key has been released once
+isKeyReleased(key:rl.Key):bool        #checks if a key has been released once
 
-isKeyDown(key:rl.KeyboardKey):bool        #checks if a key is being pressed
+isKeyDown(key:rl.Key):bool        #checks if a key is being pressed
 
-isKeyUp(key:rl.KeyboardKey):bool      #checks if a key is not being pressed
+isKeyUp(key:rl.Key):bool      #checks if a key is not being pressed
 
-getKeyPressed():KeyboardKey     #get key pressed (keycode), call it multiple times for keys queued, returns KeyboardKey.Null when the queue is empty
+getKeyPressed():Key     #get key pressed (keycode), call it multiple times for keys queued, returns Key.Null when the queue is empty
 
 getCharPressed():Rune     #get char pressed (unicode), call it multiple times for chars queued, returns 0.Rune when the queue is empty
 
