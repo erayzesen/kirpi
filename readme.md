@@ -240,11 +240,11 @@ setPan(sound:Sound)    #sets the pan of the specified sound
 #Keyboard
 isKeyPressed(key:Key):bool     #checks if a key has been pressed once
 
-isKeyReleased(key:rl.Key):bool        #checks if a key has been released once
+isKeyReleased(key:Key):bool        #checks if a key has been released once
 
-isKeyDown(key:rl.Key):bool        #checks if a key is being pressed
+isKeyDown(key:Key):bool        #checks if a key is being pressed
 
-isKeyUp(key:rl.Key):bool      #checks if a key is not being pressed
+isKeyUp(key:Key):bool      #checks if a key is not being pressed
 
 getKeyPressed():Key     #get key pressed (keycode), call it multiple times for keys queued, returns Key.Null when the queue is empty
 
