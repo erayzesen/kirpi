@@ -460,13 +460,28 @@ proc add*(spriteBatch: var SpriteBatch,x,y:float,r:float=0,sx:float=1,sy:float=1
 proc add*(spriteBatch: var SpriteBatch, quad:Quad, x,y:float,r:float=0,sx:float=1,sy:float=1,ox:float=0,oy:float=0,kx:float=0,ky:float=0):int =
   var t:Transform=newTransform(x,y,r,sx,sy,ox,oy,kx,ky)
   var q=quad
-  let id=spriteBatch.data.len
+  let index=spriteBatch.data.len
   spriteBatch.data.add( (q,t) )
   
-  result=id
+  result=index
 
 proc clear*(spriteBatch: var SpriteBatch) =
   spriteBatch.data.setLen(0)
+
+
+proc setSpriteTransform*(spriteBatch:var SpriteBatch,spriteID:int,x:float,y:float,r:float=0,sx:float=1,sy:float=1,ox:float=0,oy:float=0,kx:float=0,ky:float=0)=
+  var t:Transform=newTransform(x,y,r,sx,sy,ox,oy,kx,ky)
+  spriteBatch.data[spriteID][1]=t
+  
+proc setSpriteQuad*(spriteBatch:var SpriteBatch,spriteID:int,quad:Quad)=
+  spriteBatch.data[spriteID][0]=quad
+
+proc getSpriteCount*(spriteBatch:var SpriteBatch) : int =
+  return spriteBatch.data.len
+
+
+  
+  
   
 ### End of Sprite Batcher Methods ###
 

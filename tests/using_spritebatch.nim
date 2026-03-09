@@ -11,6 +11,7 @@ type
     y:float
     beginY:float
     flip:bool # swim direction
+    spriteID:int
 
 
 var fishes:seq[Fish] # All fish instances stored here
@@ -29,7 +30,17 @@ proc reCreateFishes(count:int) =
     var nFish=Fish(x:rand(window.getWidth().float), y:rand(window.getWidth().float))
     nFish.beginY=nFish.y
     nFish.flip=if rand(5.int)==3 : true else : false
+    nFish.spriteID=spriteBatch.add(  # It returns an index; we capture it here just to demonstrate it.
+      nFish.x, # x position
+      nFish.y, # y position
+      0.0,  # rotation
+      1.0, # scale x
+      1.0, # scale y
+      fishTexture.width.float*0.5, # origin x 
+      fishTexture.height.float*0.5 # origin y
+    )
     fishes.add(nFish)
+    
 
 
 proc config(settings : var AppSettings) =
@@ -53,6 +64,8 @@ proc update( dt:float) =
     fishCount=max(0,fishCount-1000) 
     reCreateFishes(fishCount) # Rebuild batch with new count
 
+
+  let scale=0.2
   # Update fish motion 
   # Horizontal movement + sine wave
   for i in 0..<fishes.len: 
@@ -63,22 +76,13 @@ proc update( dt:float) =
     else : fishes[i].x += 0.5
 
     fishes[i].y = fishes[i].beginY + sin(getTime() + fishes[i].beginY)*16
+    let flipFactor:float = if fishes[i].flip : -1 else : 1
+    spriteBatch.setSpriteTransform(fishes[i].spriteID,fishes[i].x,fishes[i].y,0.0,flipFactor*scale,scale,fishTexture.width*0.5,fishTexture.height*0.5)
   
   # Refill batch with transforms
-  spriteBatch.clear()
-  let scale=0.2
-  for i in 0..<fishes.len :
-    let flipFactor:float = if fishes[i].flip : -1 else : 1
-    # Add fish sprite to the batch with flip + scale applied
-    let batchID=spriteBatch.add(  # It returns an ID; we capture it here just to demonstrate it.
-      fishes[i].x, # x position
-      fishes[i].y, # y position
-      0.0,  # rotation
-      flipFactor*scale, # scale x
-      scale, # scale y
-      fishTexture.width.float*0.5, # origin x 
-      fishTexture.height.float*0.5 # origin y
-    )
+  
+  
+    
 
 # Draw batch + UI
 proc draw() =

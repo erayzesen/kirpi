@@ -195,10 +195,16 @@ clear(color:Color)     #clears the screen with the specified color.
 getSizeWith(text:Text,fontSize:float,spacing:float=1.0) :tuple[x:float,y:float] # returns the text size using the specified font size and spacing.
 
 #SpriteBatch Methods 
-#adds an instance to SpriteBatch
+#adds an instance to SpriteBatch.It returns the index number of the sprite.
 add(spriteBatch: var SpriteBatch,x,y:float,r:float=0,sx:float=1,sy:float=1,ox:float=0,oy:float=0,kx:float=0,ky:float=0):int
-#adds an instance to SpriteBatch with Quad
+#adds an instance to SpriteBatch with Quad. It returns the index number of the sprite.
 add(spriteBatch: var SpriteBatch, quad:Quad, x,y:float,r:float=0,sx:float=1,sy:float=1,ox:float=0,oy:float=0,kx:float=0,ky:float=0):int 
+#Sets the transform of the sprite at the specified index.
+setSpriteTransform(spriteBatch:var SpriteBatch,spriteID:int,x:float,y:float,r:float=0,sx:float=1,sy:float=1,ox:float=0,oy:float=0,kx:float=0,ky:float=0)
+#Sets the quad of the sprite at the specified index.
+setSpriteQuad(spriteBatch:var SpriteBatch,spriteID:int,quad:Quad)
+#Returns the number of sprites in the sprite batch.
+getSpriteCount(spriteBatch:var SpriteBatch) : int
 
 #Shader Methods  
 setShader(shader:Shader) #  sets the specified shader for subsequent drawing operations. 
