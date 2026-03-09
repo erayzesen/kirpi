@@ -71,6 +71,7 @@ proc setShaderTextureValue*(shaderID:Hash, uniformName:string, textureID:Hash)
 proc renderGeometry*(vertices:var seq[tuple[x,y,uvx,uvy:float]],indices:var seq[int],color:tuple[r,g,b,a:uint8],textureDataID:int=0)
 proc renderGeometry*(trianglePoints:var seq[tuple[x,y,uvx,uvy:float]],color:tuple[r,g,b,a:uint8],textureDataID:int=0)
 
+
 proc clearCanvas*(color:tuple[r,g,b,a:uint8]) 
     
 #endregion
@@ -356,6 +357,10 @@ proc renderGeometry*(trianglePoints:var seq[tuple[x,y,uvx,uvy:float]],color:tupl
     rlEnd()
     setTexture(0)
 
+
+
+
+#Clear canvas with a specified color 
 proc clearCanvas*(color:tuple[r,g,b,a:uint8]) =
     clearBackground( Color(r:color.r,g:color.g,b:color.b,a:color.a) )
   
