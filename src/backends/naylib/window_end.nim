@@ -13,13 +13,13 @@ proc setFullScreenMode*(value:bool)
 proc getFullScreenMode*() :bool
 proc setBorderlessMode*(value: bool )
 proc getBorderlessMode*() :bool 
-proc setMinSize*(width:int=1,height:int=1)
+proc setMinSize*(width:float=1,height:float=1)
 proc setFocused*()
 proc isFocused*() :bool
 proc isResized*() : bool 
 proc setTitle*(title:string) 
-proc getWidth*() : int 
-proc getHeight*() : int 
+proc getWidth*() : float
+proc getHeight*() : float
 
 
 #endregion
@@ -68,7 +68,7 @@ proc getBorderlessMode*() :bool =
     result= isWindowState(BorderlessWindowedMode)
 
 
-proc setMinSize*(width:int=1,height:int=1)  =
+proc setMinSize*(width:float=1,height:float=1)  =
     rl.setWindowMinSize( int32(width),int32(height) )
 
 proc setFocused*() =
@@ -83,10 +83,10 @@ proc isResized*() : bool =
 proc setTitle*(title:string) =
     setWindowTitle(title)
 
-proc getWidth*() : int =
-    result=getRenderWidth()
+proc getWidth*() : float =
+    result=getRenderWidth().float
 
-proc getHeight*() : int =
-    result=getRenderHeight()
+proc getHeight*() : float =
+    result=getRenderHeight().float
 
 #endregion

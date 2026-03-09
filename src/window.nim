@@ -20,7 +20,7 @@ proc getBorderlessMode*() :bool =
     result= window_end.getBorderlessMode()
 
 
-proc setMinSize*(width:int=1,height:int=1)  =
+proc setMinSize*(width:float=1,height:float=1)  =
     window_end.setMinSize(width,height )
 
 proc setFocused*() =
@@ -35,8 +35,8 @@ proc isResized*() : bool =
 proc setTitle*(title:string) =
     window_end.setTitle(title)
 
-proc getWidth*() : int =
+proc getWidth*() : float =
     result=window_end.getWidth()
 
-proc getHeight*() : int =
+proc getHeight*() : float =
     result=window_end.getHeight()

@@ -8,7 +8,9 @@
  
 Kirpi aims to be an elegant framework for the Nim language, enabling you to create 2D **creative coding** projects or awesome **2D games**. The graphics approach is inspired by [Löve2D](https://love2d.org/) (LÖVE2D users will feel right at home).
 
-Currently, it uses Naylib (the most maintained and crowded Nim wrapper for Raylib) as its backend. Consequently, it can target **Web/WASM,Linux, Windows, macOS, and Android**. In the future, new backends might be added or existing ones might change; however, the Kirpi API you write today shall remain the same. Your applications and modules will continue to function thanks to this flexible and pragmatic approach.
+Kirpi is a backend-agnostic framework. It currently defaults to naylib, the premier and most frequently updated wrapper for Nim. Consequently, it can target **Web/WASM,Linux, Windows, macOS, and Android**. In the future, new backends might be added or existing ones might change; however, the Kirpi API you write today shall remain the same. Your applications and modules will continue to function thanks to this flexible and pragmatic approach.
+
+To avoid the 'abandonware' trap common in many Nim projects, Kirpi is built to be backend-agnostic. Our mission is to provide a reliable, ever-working core framework for 2D creative coding and games, easily expandable through plugins and modules.
 
 
 
